@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+<section class="bg-white">
+    {{ form_start(registrationForm)}}
+  <div class="lg:grid lg:min-h-screen lg:grid-cols-12">
+    <section class="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
+      <!-- Image and welcome text section (same as your Tailwind component) -->
+    </section>
+
+    <main class="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
+      <div class="max-w-xl lg:max-w-3xl">
+        <!-- Remove the action attribute or set it to '#' -->
+          {% for flash_error in app.flashes('verify_email_error') %}
+          <div class="col-span-6 alert alert-danger" role="alert">
+            {{ flash_error }}
+          </div>
+          {% endfor %}
+
+          {{ form_errors(registrationForm) }}
+
+          <div class="col-span-6">
+            {{ form_row(registrationForm.email, {
+              attr: {'class': 'p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'},
+              label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+            }) }}
+          </div>
+
+          <div class="col-span-6 sm:col-span-3">
+            {{ form_row(registrationForm.plainPassword.first, {
+              label: 'Password',
+              type: 'password',
+              attr: {'class': 'p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'},
+              label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+            }) }}
+          </div>
+          
+
+          <div class="col-span-6 sm:col-span-3">
+            {{ form_row(registrationForm.plainPassword.second, {
+              label: 'Confirm Password',
+              type: 'password',
+              attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm'},
+              label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+            }) }}
+          </div>
+
+          <div class="col-span-6 flex items-center">
+            {{ form_widget(registrationForm.agreeTerms, {
+                'attr': {'class': 'my-2 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded'}
+            }) }}
+            {{ form_label(registrationForm.agreeTerms, 'Agree to terms', {
+                'label_attr': {'class': 'my-2 p-1 ml-2 block text-sm text-gray-900'}
+            }) }}
+            {{ form_errors(registrationForm.agreeTerms) }}
+          </div>
+
+
+          <div class="col-span-6">
+            <button type="submit" class="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500">
+              Register
+            </button>
+          </div>
+      </div>
+    </main>
+  </div>
+    {{ form_end(registrationForm)}}
+</section>
+{% endblock %}
