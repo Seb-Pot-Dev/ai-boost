@@ -1,3 +1,4 @@
+{# Pour connaitre la position du user dans sa navigation et adapté le style des btn nav #}
 {% set currentPath = app.request.pathinfo %}
 <nav class="bg-gray-800">
   <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -32,13 +33,21 @@
        <div class="hidden sm:ml-6 sm:block">
   <div class="flex space-x-4">
     <!-- Utilisation de la fonction path pour vérifier la route actuelle -->
-    <a href="/" class="{{ app.request.pathinfo == '/' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Home</a>
+    <a href="/app" class="{{ currentPath == '/app' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium" aria-current="page">
+      App
+    </a>
     
     {% if app.user %}
-      <a href="/logout" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Logout</a>
+      <a href="/logout" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">
+        Logout
+      </a>
     {% else %}
-      <a href="/login" class="{{ app.request.pathinfo == '/login' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium">Login</a>
-      <a href="/register" class="{{ app.request.pathinfo == '/register' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium">Register</a>
+      <a href="/login" class="{{ currentPath == '/login' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium">
+        Login
+      </a>
+      <a href="/register" class="{{ currentPath == '/register' ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium">
+        Register
+      </a>
     {% endif %}
   </div>
 </div>
