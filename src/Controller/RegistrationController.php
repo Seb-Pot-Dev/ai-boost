@@ -40,6 +40,8 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
+            
+            $user->setPremium(false);
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -54,7 +56,7 @@ class RegistrationController extends AbstractController
             );
             // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('_preview_error');
+            return $this->redirectToRoute('app');
         }
 
         return $this->render('registration/register.html.twig', [
