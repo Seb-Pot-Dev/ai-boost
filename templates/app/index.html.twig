@@ -3,89 +3,127 @@
 {% block title %}Hello AppController!{% endblock %}
 
 {% block body %}
-<section class="bg-white">
-    {{ form_start(form)}}
-  <div class="lg:grid lg:min-h-screen lg:grid-cols-12">
-    
+<main class="radient-background">
+<h1 class="bg-red-500 w-full text-7xl"></h1>
+                
+    {{ form_start(form, {
+        attr: {
+            'id': 'my-form',
+            'class': 'w-full h-full',
+            }
+        })
+    }}
+    {# <div class="flex justify-center"> #}
+        <section class="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
+            <div class="max-w-xl lg:max-w-3xl">
 
-    <main class="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
-      <div class="max-w-xl lg:max-w-3xl">
 
-          {{ form_errors(form) }}
+                <div class="col-span-6">
+                    {{ form_row(form.characterName, {
+                    attr: {
+                        'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm'
+                        },
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+                    }) }}
+                </div>
 
-          <div class="col-span-6">
-            {{ form_row(form.characterName, {
-              attr: {'class': 'p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'},
-              label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
-            }) }}
-          </div>
+                {# <div class="col-span-6 sm:col-span-3">
+                    {{ form_row(form.genreNames, {
+                    attr: {'class': 'p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'},
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+                    }) }}
+                </div> #}
+            
+                <div class="mt-4 col-span-6 grid grid-cols-3 gap-4">
+                {# Itération sur chaque choix pour genreNames #}
+                {% for genreName in form.genreNames %}
+                    <div class="flex items-center">
+                        {# Rendu de la case à cocher avec les classes Tailwind #}
+                        {{ form_widget(genreName, {
+                            'attr': {'class': 'h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded'}
+                        }) }}
+                        {# Rendu du label avec les classes Tailwind #}
+                        {{ form_label(genreName, null, {
+                            'label_attr': {'class': 'ml-2 block text-sm text-gray-900'}
+                        }) }}
+                    </div>
+                {% endfor %}
+                </div>
+                {{ form_errors(form.genreNames) }}
 
-          {# <div class="col-span-6 sm:col-span-3">
-            {{ form_row(form.genreNames, {
-              attr: {'class': 'p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'},
-              label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
-            }) }}
-          </div> #}
-          
-<div class="mt-2 col-span-6 grid grid-cols-3 gap-4">
-    {# Itération sur chaque choix pour genreNames #}
-    {% for genreName in form.genreNames %}
-        <div class="flex items-center">
-            {# Rendu de la case à cocher avec les classes Tailwind #}
-            {{ form_widget(genreName, {
-                'attr': {'class': 'h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded'}
-            }) }}
-            {# Rendu du label avec les classes Tailwind #}
-            {{ form_label(genreName, null, {
-                'label_attr': {'class': 'ml-2 block text-sm text-gray-900'}
-            }) }}
+
+
+                <div class="col-span-6 sm:col-span-3">
+                    {{ form_row(form.authorName, {
+                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm'},
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+                    }) }}
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                    {{ form_row(form.wordsCount, {
+                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm'},
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+                    }) }}
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                    {{ form_row(form.languageName, {
+                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm'},
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+                    }) }}
+                </div>
+
+
+
+
+                        <div class="mt-6 col-span-6 sm:col-span-3 flex justify-center">
+                        
+                        {{ form_row(form.submit, {
+                            attr: {'class': 'mt-2 inline-block shrink-0 rounded-md border border-cambridge-blue bg-cambridge-blue px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-cambridge-blue focus:outline-none focus:ring active:text-blue-500'},
+                        }) }}
+                    </div>
+                {{ form_end(form)}}
+            </div>
         </div>
-    {% endfor %}
-</div>
-
-
-
-          <div class="col-span-6 sm:col-span-3">
-            {{ form_row(form.authorName, {
-              attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm'},
-              label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
-            }) }}
-          </div>
-
-          <div class="col-span-6 sm:col-span-3">
-            {{ form_row(form.wordsCount, {
-              attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm'},
-              label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
-            }) }}
-          </div>
-
-          <div class="col-span-6 sm:col-span-3">
-            {{ form_row(form.languageName, {
-              attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm'},
-              label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
-            }) }}
-          </div>
-
-
-
-
-          <div class="pt-2 col-span-6 sm:col-span-3 flex justify-center">
-            {{ form_row(form.submit, {
-              attr: {'class': 'inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500'},
-            }) }}
-          </div>
-    {{ form_end(form)}}
-      </div>
-    </main>
-    <section class="relative p-12 flex h-32 items-center justify-center text-white bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
-        {{ inputText }}
-        {# {{ message }} #}
-
     </section>
-  </div>
-</section>
 
-
+    <section id="gpt-output" class="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
+        
+    </section>
     
-</div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('my-form'); 
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update your page based on the response
+                    console.log('Success:', data);
+                    document.getElementById('gpt-output').innerHTML = data.inputText;
+                } else {
+                    // Handle failure
+                    console.error('Form submission failed', data);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+
+</script>
 {% endblock %}
