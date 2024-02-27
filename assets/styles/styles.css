@@ -1,0 +1,19 @@
+:root{
+    --paynes-gray: #555b6eff;
+    --cambridge-blue: #89b0aeff;
+    --mint-green: #bee3dbff;
+    --seasalt: #faf9f9ff;
+    --apricot: #ffd6baff;
+
+    --black: #0a0908ff;
+    --gunmetal: #22333bff;
+    --almond: #eae0d5ff;
+    --khaki: #c6ac8fff;
+    --walnut-brown: #5e503fff;
+}
+
+.radient-background{
+    background: linear-gradient(225deg, var(--mint-green), var(--seasalt), var(--apricot));
+    height: 100%;
+    width: 100%;
+}
