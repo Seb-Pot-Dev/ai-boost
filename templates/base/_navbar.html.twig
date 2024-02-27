@@ -38,6 +38,7 @@
     </a>
     
     {% if app.user %}
+    <p class="inline-block text-black hover:bg-seasalt  rounded-md px-3 py-2 text-sm font-medium">Bonjour {{app.user.email}}</p>
       <a href="/logout" class="text-black hover:bg-seasalt  rounded-md px-3 py-2 text-sm font-medium">
         Logout
       </a>

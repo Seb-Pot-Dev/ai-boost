@@ -6,17 +6,17 @@
 <main class="radient-background">
 <h1 class="bg-red-500 w-full text-7xl"></h1>
                 
-    {{ form_start(form, {
-        attr: {
-            'id': 'my-form',
-            'class': 'w-full h-full',
-            }
-        })
-    }}
     {# <div class="flex justify-center"> #}
-        <section class="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
+        <section id="formSection" class="min-h-screen flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
             <div class="max-w-xl lg:max-w-3xl">
 
+            {{ form_start(form, {
+                attr: {
+                    'id': 'my-form',
+                    'class': 'w-full h-full',
+                    }
+                })
+            }}
 
                 <div class="col-span-6">
                     {{ form_row(form.characterName, {
@@ -88,7 +88,7 @@
         </div>
     </section>
 
-    <section id="gpt-output" class="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
+    <section id="responseSection"  class="min-h-screen flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6" style="display: none">
         
     </section>
     
@@ -110,11 +110,26 @@
             })
             .then(response => response.json())
             .then(data => {
+                // si on reçoit bien la reponse
                 if (data.success) {
-                    // Update your page based on the response
-                    console.log('Success:', data);
-                    document.getElementById('gpt-output').innerHTML = data.inputText;
-                } else {
+                    // faire disparaître le formulaire
+                    const formSection = document.getElementById('formSection');
+                    // effet de transition immédiat
+                    formSection.classList.add('fade-out');
+                    // Après 1s
+                    setTimeout(() => {
+                        // Cacher après la transition
+                        formSection.style.display = 'none'; 
+                        formSection.classList.remove('flex');
+                        // insérer la réponse
+                        const responseSection = document.getElementById('responseSection');
+                        responseSection.innerHTML = data.inputText;
+                        responseSection.classList.add('fade-in');
+                        responseSection.style.display = 'block';
+                        responseSection.style.opacity = 0;
+                        setTimeout(() => responseSection.style.opacity = 1, 10); // Léger délai pour commencer la transition
+                    }, 1000)
+                    } else {
                     // Handle failure
                     console.error('Form submission failed', data);
                 }
