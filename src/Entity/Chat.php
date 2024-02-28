@@ -27,6 +27,9 @@ class Chat
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $scenario = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +79,18 @@ class Chat
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getScenario(): ?string
+    {
+        return $this->scenario;
+    }
+
+    public function setScenario(string $scenario): static
+    {
+        $this->scenario = $scenario;
 
         return $this;
     }
