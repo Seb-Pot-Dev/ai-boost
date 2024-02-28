@@ -27,8 +27,9 @@
         </button>
       </div>
       <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+        {# logo #}
         <div class="flex flex-shrink-0 items-center">
-✨
+          ✨
         </div>
        <div class="hidden sm:ml-6 sm:block">
   <div class="flex space-x-4">
@@ -38,7 +39,10 @@
     </a>
     
     {% if app.user %}
-    <p class="inline-block text-black hover:bg-seasalt  rounded-md px-3 py-2 text-sm font-medium">Bonjour {{app.user.email}}</p>
+    <p class="flex justify-center text-black hover:bg-seasalt  rounded-md px-3 py-2 text-sm font-medium">
+    Bonjour {{app.user.email}}
+    {% if app.user.isPremium(true) %}👑{% endif %}
+    </p>
       <a href="/logout" class="text-black hover:bg-seasalt  rounded-md px-3 py-2 text-sm font-medium">
         Logout
       </a>
