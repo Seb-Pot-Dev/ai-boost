@@ -55,9 +55,14 @@ class StripeController extends AbstractController
     }
 
     #[Route('/success', name: 'app_stripe_success')]
-    public function success(UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    public function success(EntityManagerInterface $entityManager): Response
     {
+        
         $user = $this->getUser();
+        if (!$user) {
+            // Handle the case where there is no authenticated user
+            throw $this->createNotFoundException('No authenticated user found.');
+        }
         $user->setPremium(true);
         $entityManager->persist($user);
         $entityManager->flush(); // Flush ici si vous voulez sauvegarder tout de sui
