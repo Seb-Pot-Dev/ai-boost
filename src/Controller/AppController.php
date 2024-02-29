@@ -39,8 +39,7 @@ class AppController extends AbstractController
             if ($request->isXmlHttpRequest()) {
                 // Récupère les données du formulaire et les stocke dans $data
                 $data = $form->getData();
-                // Crée un client OpenAI avec la clé d'API
-                $client = OpenAI::client('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');
+
                 // Si le tableau genreNames n'est pas vide
                 if (!empty($data['genreNames'])) {
                     // Créer une string avec les genres séparés par une virgule
@@ -73,28 +72,43 @@ class AppController extends AbstractController
                 // Remplace 'user:' par une string vide
                 $scenario = str_replace('user:', '', $scenario);
 
-                // Crée un nouveau Chat
+                // Crée un nouveau Chat en bdd
                 $chat = new Chat();
                 $chat->setUser($user); // Associe l'utilisateur actuellement connecté au nouveau chat
                 $chat->setScenario($scenario);
                 $chat->setCreatedAt(new \DateTimeImmutable());
+
+
+                // Crée un client OpenAI avec la clé d'API
+                $openAiClient = OpenAI::client('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');
+                // intéroge l'API GPT-3.5 Turbo avec le "initialPrompt", correspondant au prompt initial formaté 
+                $gptResponse = $openAiClient->chat()->create([
+                    'model' => 'gpt-3.5-turbo',
+                    'messages' => $initialPrompt,
+                ]);
+
+                // Récupère le contenu de la réponse de GPT-3.5 Turbo 
+                $gptResponse = $gptResponse->toArray()['choices'][0]['message']['content'];
+
+                // Prépare le premier message du chat, avec la réponse de GPT en format JSON
+                $firstMessage = json_encode([
+                    [
+                        'role' => 'assistant',
+                        'content' => $gptResponse, // La réponse de GPT
+                    ]
+                ]);
+
+                // Ajoute ce premier message à Chat.messages
+                $chat->setMessages($firstMessage);
                 // Enregistrement du chat dans la base de données
                 $entityManager->persist($chat);
                 $entityManager->flush();
-                //ICI utiliser $message ou $scenario pour appel API OpenAI
 
-                // //Utiliser $initialPrompt pour  l'appel API (consomme X tokens)
-                // $response = $client->chat()->create([
-                //     'model' => 'gpt-3.5-turbo',
-                //     'initialPrompt' => $initialPrompt,
-                // ]);
-
-                // $message = $response->toArray()['choices'][0]['message']['content'];
                 return new JsonResponse([
                     'success' => true,
                     'chatId' => $chat->getId(),
                     'scenario' => $scenario,
-                    // 'message' => $message, // Uncomment this if you have the message variable ready
+                    'gptResponse' => $gptResponse,
                 ]);
             }
         }
@@ -133,20 +147,53 @@ class AppController extends AbstractController
             return new JsonResponse(['error' => 'No input provided'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Prépare le contexte pour l'API ou une autre logique métier
-        // Supposons que vous avez une méthode pour traiter la réponse, la mettre à jour dans le chat, etc.
-        // $responseFromApi = ...; // Traiter la réponse, interagir avec l'API ou autre
+        // Prépare le message de l'utilisateur pour l'API
+        $userMessage = [
+            'role' => 'user',
+            'content' => $userInput,
+        ];
 
-        // Met à jour le chat avec le nouvel input de l'utilisateur
-        // (Vous pouvez vouloir ajouter une méthode dans votre entité Chat pour cela)
-        // $chat->addMessage(new ChatMessage($user, $userInput));
-        // $entityManager->flush();
+        // Récupère l'historique des messages du chat pour le contexte
+        $existingMessages = json_decode($chat->getMessages(), true);
+        $existingMessages[] = $userMessage; // Ajoute le message de l'utilisateur au contexte existant
+
+        // Prépare le contexte pour l'API
+        $context = [
+            'model' => 'gpt-3.5-turbo',
+            'messages' => $existingMessages,
+        ];
+
+        // Crée un client OpenAI avec la clé d'API (utiliser une variable d'environnement ici)
+        $openAiClient = OpenAI::client('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');
+
+        // Traiter la réponse, interagir avec l'API ou autre
+        $gptResponse = $openAiClient->chat()->create($context);
+
+        // Récupère le contenu de la réponse de GPT-3.5 Turbo
+        $apiResponseContent = $gptResponse->toArray()['choices'][0]['message']['content'];
+
+        // Prépare la réponse de l'API pour l'ajouter au chat
+        $apiMessage = [
+            'role' => 'assistant',
+            'content' => $apiResponseContent,
+        ];
+
+        // Met à jour le chat avec le nouvel input de l'utilisateur et la réponse de l'API
+        $existingMessages[] = $apiMessage; // Ajoute la réponse de l'API au contexte existant
+        $updatedMessages = json_encode($existingMessages);
+        $chat->setMessages($updatedMessages);
+
+        // Sauvegarde les changements dans la base de données
+        $entityManager->persist($chat);
+        $entityManager->flush();
+
+
 
         // Supposons que vous envoyez la réponse de l'utilisateur et la réponse de l'API (ou autre logique) en retour
         return new JsonResponse([
             'success' => true,
             'userInput' => $userInput, // Envoyer en retour si nécessaire
-            // 'responseFromApi' => $responseFromApi, // Réponse de votre logique métier ou API
+            'responseFromApi' => $apiResponseContent,
         ]);
     }
 }

@@ -88,11 +88,25 @@
         </div>
     </section>
 
-    <section id="responseSection"  class="min-h-screen flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6" style="display: none">
-        {# gpt outputs #}
-        <p id="gptOutputs"></p>
+    <section id="chatSection"  class="min-h-screen flex-col items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6" style="display: none">
+        <div class="flex items-start gap-4" id="gptOutputsDiv">
+            <img
+                src="https://funny-photo.s3.amazonaws.com/preview/half_robot_face_mask/robot-face-photo-effect.jpg"
+                alt=""
+                class="size-20 rounded-lg object-cover"
+            />
 
-        {# user input #}
+            <div>
+                <h3 class="text-lg/tight font-medium text-gray-900">Maitre du jeu</h3>
+
+                <p class="mt-0.5 text-gray-700" id="gptOutputs">
+                {# GPT outputs heres #}
+                </p>
+            </div>
+        </div>
+        
+
+        {# user input FORM #}
         <div class="flex justify-center">
             <div class="w-6/12 overflow-hidden rounded-lg border border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
                 <textarea id="userResponse" class="w-full resize-none border-none align-top focus:ring-0 sm:text-sm" rows="4" placeholder="Enter any additional order notes..."></textarea>
@@ -101,7 +115,6 @@
                 </div>
             </div>
         </div>
-
     </section>
     
 </main>
@@ -137,13 +150,13 @@ let chatId; // Stocke l'ID du chat pour l'utiliser dans la requête de réponse
                         formSection.style.display = 'none'; 
                         formSection.classList.remove('flex');
                         // insérer la réponse
-                        const responseSection = document.getElementById('responseSection');
+                        const chatSection = document.getElementById('chatSection');
                         const gptOutputs = document.getElementById('gptOutputs');
-                        gptOutputs.innerHTML = data.scenario;
-                        responseSection.classList.add('fade-in');
-                        responseSection.style.display = 'block';
-                        responseSection.style.opacity = 0;
-                        setTimeout(() => responseSection.style.opacity = 1, 10); // Léger délai pour commencer la transition
+                        gptOutputs.innerHTML = data.gptResponse;
+                        chatSection.classList.add('fade-in');
+                        chatSection.style.display = 'block';
+                        chatSection.style.opacity = 0;
+                        setTimeout(() => chatSection.style.opacity = 1, 10); // Léger délai pour commencer la transition
                     }, 1000)
                     } else {
                     // Handle failure
@@ -163,10 +176,48 @@ let chatId; // Stocke l'ID du chat pour l'utiliser dans la requête de réponse
 const sendButton = document.getElementById('sendResponse');
 const userResponse = document.getElementById('userResponse');
 
+function addResponseToChat(responseText, responseType) {
+    const responseDiv = document.createElement("div");
+    const textContainerDiv = document.createElement("div");
+
+    // style différent selon le type de réponse (utilisateur ou GPT)
+    responseDiv.className = responseType === 'user' ? "flex items-start gap-4 my-1" : "flex items-start gap-4 my-1";
+    // Créez la div externe pour l'avatar et le texte selon le type de réponse (utilisateur ou GPT)
+    const imageElement = document.createElement("img");
+    imageElement.src = responseType === 'user' ? "https://cdn.futura-sciences.com/buildsv6/images/wide1920/1/d/8/1d8a8e8fe1_109430_chouette-hibou-difference.jpg" : "https://funny-photo.s3.amazonaws.com/preview/half_robot_face_mask/robot-face-photo-effect.jpg"; // Utilisez des liens d'image appropriés
+    imageElement.alt = responseType === 'user' ? "Avatar de l'utilisateur" : "Avatar de GPT";
+    imageElement.className = "size-20 rounded-lg object-cover";
+    
+    // Ajoutez l'élément img à la div externe
+    responseDiv.appendChild(imageElement);
+
+    // Créez et configurez le h3 pour le nom du personnage
+    const characterName = document.createElement("h3");
+    characterName.className = "text-lg font-medium text-gray-900";
+    characterName.textContent = responseType === 'user' ? "Utilisateur" : "GPT"; // Changez cela selon votre besoin
+    // Ajoutez le h3 à la div de texte
+    textContainerDiv.appendChild(characterName);
+
+    const responseContent = document.createElement("p");
+    responseContent.className = "mt-0.5 text-gray-700";
+    responseContent.textContent = responseText;
+    textContainerDiv.appendChild(responseContent);
+
+
+    // Ajoutez le paragraphe à la div de texte
+    responseDiv.appendChild(textContainerDiv);
+
+    // Sélectionnez l'élément après lequel vous souhaitez insérer le nouveau div
+    const referenceElement = document.getElementById('chatSection'); // Assurez-vous que cet ID existe
+
+    // Insérez le nouveau div après l'élément de référence
+    referenceElement.appendChild(responseDiv);
+
+}
 sendButton.addEventListener('click', function() {
-    console.log(chatId);
     const responseText = userResponse.value;
     let formData = new FormData();
+
     formData.append('response', responseText);
 
     const url = `/handle-chat-interaction/${chatId}`;
@@ -182,10 +233,14 @@ sendButton.addEventListener('click', function() {
         return response.json();
     })
     .then(data => {
-        console.log(data); // Traite la réponse du serveur
-        gptOutputs.innerHTML+=responseText;
-        console.log(userInput);
-        // Ici, tu peux également mettre à jour le DOM en fonction de la réponse
+        console.log(data);
+        // Assurez-vous que 'data' contient la réponse de l'API sous une forme que vous pouvez utiliser
+        addResponseToChat(userResponse.value, 'user'); // Ajoute la réponse de l'utilisateur
+        console.log(userResponse.value);
+        if (data && data.responseFromApi) {
+            console.log(data.responseFromApi);
+            addResponseToChat(data.responseFromApi, 'gpt'); // Ajoute la réponse de GPT
+        }
     })
     .catch(error => {
         console.error('Error:', error);
