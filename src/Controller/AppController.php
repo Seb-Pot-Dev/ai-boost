@@ -49,7 +49,7 @@ class AppController extends AbstractController
                 $initialPrompt = [
                     ['role' => 'user', 'content' => 'Lets play a game. I am the sole protagonist of this story. My name is ' . $data['characterName'] . '.'],
                     ['role' => 'user', 'content' => 'You are the narrator of this story. This story is written by mixing different genres (' . $genreNamesString . ') cleverly blended together, creating suspense and twists typical to that genres.'],
-                    ['role' => 'user', 'content' => "The story is divided into paragraphs. Each paragraph is a " . $data['wordsCount'] . " words second-person description of the story in " . $data['languageName'] . " langage. Wait for the user to describe what happens next. Continue the story based on the user's response. Write another paragraph of the story. In this game where you are the narrator, always use the following Rules: Only continue the story after the user has said what will happen next. Do not rush the story, the pace will be very slow. Do not be general in your descriptions. Try to be detailed. Do not continue the story without the protagonist's input. Continue the new paragraph with a " . $data['wordsCount'] . " description of the story. The story must not end. Start the story with the first paragraph by describing the context. Describe the story in the second person."],
+                    ['role' => 'user', 'content' => "The story is divided into paragraphs. Each paragraph is a " . $data['wordsCount'] . " words second-person description of the story in " . $data['languageName'] . " langage. Wait for the user to describe what happens next. Continue the story based on the user's response. Write another paragraph of the story. In this game where you are the narrator, always use the following Rules: Only continue the story after the user has said what will happen next. Do not rush the story, the pace will be very slow. Do not be general in your descriptions. Try to be detailed. Do not continue the story without the protagonist's input. Continue the new paragraph with a " . $data['wordsCount'] . " description of the story. The story must not end. Start the story with the first paragraph by describing the context. Describe the story in " . $data['languageName'] . ", using the second person."],
                 ];
 
                 // Si le tableau authorName n'est pas vide
@@ -163,13 +163,13 @@ class AppController extends AbstractController
             'messages' => $existingMessages,
         ];
 
-        // Crée un client OpenAI avec la clé d'API (utiliser une variable d'environnement ici)
+        // Crée un client OpenAI avec la clé d'API
         $openAiClient = OpenAI::client('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');
 
-        // Traiter la réponse, interagir avec l'API ou autre
+        // Intéroge l'API et assigne la réponse à la variable $gptResponse
         $gptResponse = $openAiClient->chat()->create($context);
 
-        // Récupère le contenu de la réponse de GPT-3.5 Turbo
+        // Récupère le contenu dans la réponse
         $apiResponseContent = $gptResponse->toArray()['choices'][0]['message']['content'];
 
         // Prépare la réponse de l'API pour l'ajouter au chat
@@ -188,12 +188,24 @@ class AppController extends AbstractController
         $entityManager->flush();
 
 
-
-        // Supposons que vous envoyez la réponse de l'utilisateur et la réponse de l'API (ou autre logique) en retour
         return new JsonResponse([
             'success' => true,
             'userInput' => $userInput, // Envoyer en retour si nécessaire
             'responseFromApi' => $apiResponseContent,
+        ]);
+    }
+
+    #[Route('/my-chats', name: 'list_user_chats')]
+    public function listUserChats(EntityManagerInterface $entityManager): Response {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('login'); // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+        }
+
+        $chats = $entityManager->getRepository(Chat::class)->findBy(['user' => $user], ['createdAt' => 'DESC']); // Récupère tous les chats de l'utilisateur, triés par date
+
+        return $this->render('chat/list.html.twig', [
+            'chats' => $chats,
         ]);
     }
 }

@@ -215,11 +215,16 @@ function addResponseToChat(responseText, responseType) {
 
 }
 sendButton.addEventListener('click', function() {
-    const responseText = userResponse.value;
+    const responseText = userResponse.value.trim(); // Assurez-vous que la réponse n'est pas juste des espaces blancs
+    if (responseText === '') {
+        // Ne rien faire si la réponse de l'utilisateur est vide
+        return;
+    }
+    addResponseToChat(responseText, 'user'); // Affiche immédiatement la réponse de l'utilisateur dans le chat
+    userResponse.value = ''; // Efface le texte de l'utilisateur
+
     let formData = new FormData();
-
     formData.append('response', responseText);
-
     const url = `/handle-chat-interaction/${chatId}`;
 
     fetch(url, { 
@@ -233,12 +238,8 @@ sendButton.addEventListener('click', function() {
         return response.json();
     })
     .then(data => {
-        console.log(data);
-        // Assurez-vous que 'data' contient la réponse de l'API sous une forme que vous pouvez utiliser
-        addResponseToChat(userResponse.value, 'user'); // Ajoute la réponse de l'utilisateur
-        console.log(userResponse.value);
+        
         if (data && data.responseFromApi) {
-            console.log(data.responseFromApi);
             addResponseToChat(data.responseFromApi, 'gpt'); // Ajoute la réponse de GPT
         }
     })
