@@ -76,7 +76,9 @@ class AppController extends AbstractController
                 $chat = new Chat();
                 $chat->setUser($user); // Associe l'utilisateur actuellement connecté au nouveau chat
                 $chat->setScenario($scenario);
-                $chat->setCreatedAt(new \DateTimeImmutable());
+                $date = new \DateTimeImmutable();
+                $chat->setCreatedAt($date);
+                $chat->setTitle($data['characterName'] . ' - ' . $data['languageName'] . ' - ' . $date->format('Y-m-d H:i:s'));
 
 
                 // Crée un client OpenAI avec la clé d'API
@@ -187,25 +189,12 @@ class AppController extends AbstractController
         $entityManager->persist($chat);
         $entityManager->flush();
 
-
+        $chatId = $chat->getId();
         return new JsonResponse([
             'success' => true,
             'userInput' => $userInput, // Envoyer en retour si nécessaire
             'responseFromApi' => $apiResponseContent,
-        ]);
-    }
-
-    #[Route('/my-chats', name: 'list_user_chats')]
-    public function listUserChats(EntityManagerInterface $entityManager): Response {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->redirectToRoute('login'); // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
-        }
-
-        $chats = $entityManager->getRepository(Chat::class)->findBy(['user' => $user], ['createdAt' => 'DESC']); // Récupère tous les chats de l'utilisateur, triés par date
-
-        return $this->render('chat/list.html.twig', [
-            'chats' => $chats,
+            'chatId' => $chatId,
         ]);
     }
 }
