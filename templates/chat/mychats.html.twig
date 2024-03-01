@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ChatController!{% endblock %}
+
+{% block body %}
+{% for chat in chats %}
+    <div class="chat">
+    {% if chat.title is not empty %}
+        <a href="/chat/{{chat.id}}"><h2>{{ chat.title }}</h2></a>
+    {% else %}
+        <a href="/chat/{{chat.id}}"><h2>{{ chat.createdAt|date('Y-m-d H:i') }}</h2></a>
+    {% endif %}
+    </div>
+    
+{% endfor %}
+{% endblock %}
