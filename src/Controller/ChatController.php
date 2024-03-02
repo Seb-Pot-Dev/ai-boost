@@ -12,7 +12,8 @@ use Symfony\Component\Routing\Attribute\Route;
 class ChatController extends AbstractController
 {
     #[Route('/my-chats', name: 'list_user_chats')]
-    public function listUserChats(EntityManagerInterface $entityManager): Response {
+    public function listUserChats(EntityManagerInterface $entityManager): Response
+    {
         $user = $this->getUser();
         if (!$user) {
             return $this->redirectToRoute('login'); // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
@@ -20,12 +21,31 @@ class ChatController extends AbstractController
 
         $chats = $entityManager->getRepository(Chat::class)->findBy(['user' => $user], ['createdAt' => 'DESC']); // Récupère tous les chats de l'utilisateur, triés par date
 
+        // Supposons que $chats est votre tableau d'objets Chat
+        $chatsWithDecodedMessages = [];
+
+        foreach ($chats as $chat) {
+            // Décoder les messages JSON en un tableau PHP
+            $decodedMessages = json_decode($chat->getMessages(), true);
+            // Ajouter les messages décodés et le chat à un nouveau tableau
+            $chatsWithDecodedMessages[] = [
+                'chat' => $chat,
+                'messages' => $decodedMessages
+            ];
+        }
+
+        
+        
+
         return $this->render('chat/mychats.html.twig', [
             'chats' => $chats,
+            'chatsWithDecodedMessages' => $chatsWithDecodedMessages,
+
         ]);
     }
     #[Route('/chat/{chatId}', name: 'view_chat')]
-    public function viewChat(EntityManagerInterface $entityManager, int $chatId): Response {
+    public function viewChat(EntityManagerInterface $entityManager, int $chatId): Response
+    {
         $user = $this->getUser();
         $chat = $entityManager->getRepository(Chat::class)->findOneBy(['id' => $chatId, 'user' => $user]);
 
@@ -40,5 +60,4 @@ class ChatController extends AbstractController
             'messages' => $messages,
         ]);
     }
-
 }

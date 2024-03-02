@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
@@ -24,20 +25,22 @@ class AppScenarioType extends AbstractType
             ->add('genreNames', ChoiceType::class, [
                 'label' => 'Writing genres',
                 'choices' => [
-                    'Fantasy' => 'fantasy',
-                    'Romance' => 'romance',
-                    'Fantastic' => 'fantastic',
-                    'Horror' => 'horror',
-                    'Action' => 'action',
+                    'Mystery' => 'Mystery',
+                    'Science Fiction' => 'Science Fiction',
+                    'Fantasy' => 'Fantasy',
+                    'Horror' => 'Horror',
+                    'Romance' => 'Romance',
+                    'Adventure' => 'Adventure',
+                    'Action' => 'Action',
                 ],
                 'expanded' => true, // pour rendre ce champ comme un groupe de checkboxes
                 'multiple' => true, // permet de sélectionner plusieurs options
-                'constraints' => [
-                    new Count([
-                        'min' => 1, // Nombre minimum d'éléments à sélectionner
-                        'minMessage' => 'You must select at least one genre.', // Message d'erreur si l'utilisateur ne sélectionne pas au moins un genre
-                    ]),
-                ],
+                // 'constraints' => [
+                //     new Count([
+                //         'min' => 0, // Nombre minimum d'éléments à sélectionner
+                //         'minMessage' => 'You must select at least one genre.', // Message d'erreur si l'utilisateur ne sélectionne pas au moins un genre
+                //     ]),
+                // ],
             ])
             ->add('authorName', TextType::class, [
                 'label' => 'In the style of this author',

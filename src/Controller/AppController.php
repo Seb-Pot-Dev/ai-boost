@@ -159,10 +159,21 @@ class AppController extends AbstractController
         $existingMessages = json_decode($chat->getMessages(), true);
         $existingMessages[] = $userMessage; // Ajoute le message de l'utilisateur au contexte existant
 
+        // Convertit le tableau de messages en une chaîne JSON, puis limite cette chaîne aux 10000 derniers caractères
+        $messagesString = json_encode($existingMessages);
+        $limitedMessagesString = substr($messagesString, max(0, strlen($messagesString) - 10000));
+
+        // Découpe les messages pour s'assurer que le JSON est valide et reconvertit en tableau
+        $limitedMessages = json_decode($limitedMessagesString, true);
+        if ($limitedMessages === null) {
+            // Si la découpe crée un JSON invalide, on utilise seulement le message le plus récent
+            $limitedMessages = [$userMessage];
+        }
+
         // Prépare le contexte pour l'API
         $context = [
             'model' => 'gpt-3.5-turbo',
-            'messages' => $existingMessages,
+            'messages' => $limitedMessages,
         ];
 
         // Crée un client OpenAI avec la clé d'API
