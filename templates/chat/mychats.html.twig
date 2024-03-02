@@ -3,14 +3,38 @@
 {% block title %}Hello ChatController!{% endblock %}
 
 {% block body %}
+<div class="flex">
+<div class="overflow-x-auto">
+    <table class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+        <thead class="ltr:text-left rtl:text-right">
+        <tr>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Personnage</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Titre</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Création</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Extrait</th>
+            <th class="px-4 py-2"></th>
+        </tr>
+        </thead>
+    <tbody class="divide-y divide-gray-200">
 {% for chat in chats %}
-    <div class="chat">
-    {% if chat.title is not empty %}
-        <a href="/chat/{{chat.id}}"><h2>{{ chat.title }}</h2></a>
-    {% else %}
-        <a href="/chat/{{chat.id}}"><h2>{{ chat.createdAt|date('Y-m-d H:i') }}</h2></a>
-    {% endif %}
-    </div>
+      <tr>
+        <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">John Doe</td>
+        <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ chat.title }}</td>
+        <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ chat.createdAt|date('Y-m-d H:i') }}</td>
+        <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ chat.messages|slice(32, 52) }}</td>
+        <td class="whitespace-nowrap px-4 py-2">
+          <a
+            href="{{ path('view_chat', {'chatId': chat.id}) }}"
+            class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+          >
+            Reprendre
+          </a>
+        </td>
+      </tr>
     
 {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
 {% endblock %}

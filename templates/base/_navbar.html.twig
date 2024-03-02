@@ -43,7 +43,7 @@
       Bonjour {{app.user.email}}
       {% if app.user.isPremium(true) %}👑{% endif %}
       </p>
-      <a href="/my-chats">My chats</a>
+      <a href="/my-chats" class="{{ currentPath == '/app' ? 'bg-gray-900 text-white' : 'text-black hover:bg-seasalt ' }}  rounded-md px-3 py-2 text-sm font-medium">My chats</a>
       <a href="/logout" class="text-black hover:bg-seasalt  rounded-md px-3 py-2 text-sm font-medium">
         Logout
       </a>

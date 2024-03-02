@@ -5,11 +5,11 @@
 {% block body %}
 <main class="radient-background">
     <!-- Section de Chat -->
-    <section id="chatSection" class="min-h-screen flex-col items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
+    <section id="chatSection" class="max-h-screen flex flex-col items-start justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
         <!-- Ici, vous pouvez ajouter le code pour afficher les messages précédents du chat -->
-
+        <div id="responseSection" class="overflow-scroll"></div>
         <!-- Formulaire pour envoyer une nouvelle réponse -->
-        <div class="flex justify-center">
+        <div class="flex justify-center order-1 w-full">
             <div class="w-6/12 overflow-hidden rounded-lg border border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
                 <textarea id="userResponse" class="w-full resize-none border-none align-top focus:ring-0 sm:text-sm" rows="4" placeholder="Votre réponse..."></textarea>
                 <div class="flex items-center justify-end gap-2 bg-white p-3">
@@ -57,7 +57,7 @@ function addResponseToChat(responseText, responseType) {
     responseDiv.appendChild(textContainerDiv);
 
     // Sélectionnez l'élément après lequel vous souhaitez insérer le nouveau div
-    const referenceElement = document.getElementById('chatSection'); // Assurez-vous que cet ID existe
+    const referenceElement = document.getElementById('responseSection'); // Assurez-vous que cet ID existe
 
     // Insérez le nouveau div après l'élément de référence
     referenceElement.appendChild(responseDiv);

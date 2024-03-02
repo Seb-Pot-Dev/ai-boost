@@ -34,22 +34,23 @@
                     }) }}
                 </div> #}
             
-                <div class="mt-4 col-span-6 grid grid-cols-3 gap-4">
-                {# Itération sur chaque choix pour genreNames #}
-                {% for genreName in form.genreNames %}
-                    <div class="flex items-center">
-                        {# Rendu de la case à cocher avec les classes Tailwind #}
-                        {{ form_widget(genreName, {
-                            'attr': {'class': 'h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded'}
-                        }) }}
-                        {# Rendu du label avec les classes Tailwind #}
-                        {{ form_label(genreName, null, {
-                            'label_attr': {'class': 'ml-2 block text-sm text-gray-900'}
-                        }) }}
-                    </div>
-                {% endfor %}
+                <fieldset class="flex flex-wrap gap-3 max-w-64 items-center justify-center">
+                    <legend class="sr-only">Genre Names</legend>
+                    {# Itération sur chaque choix pour genreNames #}
+                    {% for genreName in form.genreNames %}
+                    <div>
+                    <label class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-gray-900 hover:border-gray-300 has-[:checked]:bg-cambridge-blue has-[:checked]:text-white has-[:checked]:border-black transform active:scale-75 transition-transform">
+                    {{ form_widget(genreName, {
+                        'attr': {'class': 'sr-only'}
+                    }) }}
+                    {# Utilisation du label du genre comme texte du bouton #}
+                    <p class="text-sm font-medium">{{ genreName.vars.label }}</p>
+                    </label>
                 </div>
+                {% endfor %}
+                </fieldset>
                 {{ form_errors(form.genreNames) }}
+
 
 
 
@@ -88,7 +89,7 @@
         </div>
     </section>
 
-    <section id="chatSection"  class="min-h-screen flex-col items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6" style="display: none">
+    <section id="chatSection"  class=" max-h-screen flex flex-col items-start justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6" style="display: none">
         <div class="flex items-start gap-4" id="gptOutputsDiv">
             <img
                 src="https://funny-photo.s3.amazonaws.com/preview/half_robot_face_mask/robot-face-photo-effect.jpg"
@@ -98,16 +99,15 @@
 
             <div>
                 <h3 class="text-lg/tight font-medium text-gray-900">Maitre du jeu</h3>
-
                 <p class="mt-0.5 text-gray-700" id="gptOutputs">
                 {# GPT outputs heres #}
                 </p>
             </div>
         </div>
-        
+        <div id="responseSection" "></div>
 
         {# user input FORM #}
-        <div class="flex justify-center">
+        <div class="flex justify-center order-1 w-full">
             <div class="w-6/12 overflow-hidden rounded-lg border border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
                 <textarea id="userResponse" class="w-full resize-none border-none align-top focus:ring-0 sm:text-sm" rows="4" placeholder="Enter any additional order notes..."></textarea>
                 <div class="flex items-center justify-end gap-2 bg-white p-3">
@@ -208,7 +208,7 @@ function addResponseToChat(responseText, responseType) {
     responseDiv.appendChild(textContainerDiv);
 
     // Sélectionnez l'élément après lequel vous souhaitez insérer le nouveau div
-    const referenceElement = document.getElementById('chatSection'); // Assurez-vous que cet ID existe
+    const referenceElement = document.getElementById('responseSection'); // Assurez-vous que cet ID existe
 
     // Insérez le nouveau div après l'élément de référence
     referenceElement.appendChild(responseDiv);
