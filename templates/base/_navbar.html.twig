@@ -1,7 +1,7 @@
 {# Pour connaitre la position du user dans sa navigation et adapté le style des btn nav #}
 {% set currentPath = app.request.pathinfo %}
 <nav class="bg-cambridge-blue">
-  <div class="mx-auto  px-2 sm:px-6 lg:px-8">
+  <div class="mx-auto px-2 sm:px-6 lg:px-8">
     <div class="relative flex h-16 items-center justify-between">
       <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
         <!-- Mobile menu button-->
@@ -110,3 +110,27 @@
     </div>
   </div>
 </nav>
+
+<script>
+// On attend que le DOM soit entièrement chargé
+document.addEventListener('DOMContentLoaded', () => {
+    // On sélectionne le bouton qui ouvre/ferme le menu mobile
+    const menuButton = document.querySelector('[aria-controls="mobile-menu"]');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    // On vérifie que les éléments existent bien
+    if (menuButton && mobileMenu) {
+        // On écoute l'événement 'click' sur le bouton
+        menuButton.addEventListener('click', () => {
+            // On ajoute ou on retire la classe 'hidden' du menu mobile
+            // pour le montrer ou le cacher
+            mobileMenu.classList.toggle('hidden');
+
+            // Change l'aria-expanded en fonction de l'état du menu
+            const expanded = menuButton.getAttribute('aria-expanded') === 'true' || false;
+            menuButton.setAttribute('aria-expanded', !expanded);
+        });
+    }
+});
+
+</script>
