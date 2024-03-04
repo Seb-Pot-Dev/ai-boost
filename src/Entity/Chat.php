@@ -33,6 +33,15 @@ class Chat
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $language = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $characterName = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $story = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -106,6 +115,42 @@ class Chat
     public function setTitle(?string $title): static
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getLanguage(): ?string
+    {
+        return $this->language;
+    }
+
+    public function setLanguage(?string $language): static
+    {
+        $this->language = $language;
+
+        return $this;
+    }
+
+    public function getCharacterName(): ?string
+    {
+        return $this->characterName;
+    }
+
+    public function setCharacterName(?string $characterName): static
+    {
+        $this->characterName = $characterName;
+
+        return $this;
+    }
+
+    public function getStory(): ?string
+    {
+        return $this->story;
+    }
+
+    public function setStory(?string $story): static
+    {
+        $this->story = $story;
 
         return $this;
     }
