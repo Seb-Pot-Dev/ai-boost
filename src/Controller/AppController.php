@@ -19,12 +19,19 @@ class AppController extends AbstractController
     #[Route('/app', name: 'app')]
     public function index(Request $request, User $user = null, EntityManagerInterface $entityManager): Response
     {
+        // Récupère l'utilisateur actuellement connecté
         $user = $this->getUser();
-        // if ($user->isPremium()) {
-        // on mettra ici la logique d'accès réservé aux membres payants
-        // il faudrait pouvoir autoriser 3 conversations gratuites 
-        // avec une limite de 10 prompt par conversation 
-        // avant de proposer le CTA -> PREMIUM
+
+        if (!$user) {
+            // Si l'utilisateur n'est pas connecté, redirige vers la page de connexion
+            return $this->redirectToRoute('app_login');
+        }
+        // Initialisation des limites :
+        $maxFreeChats = 1; // Limite de chats gratuits pour les utilisateurs non premium
+        // Vérifier si l'utilisateur est premium
+        $isPremium = $user->isPremium();
+        // Compter le nombre de chats déjà créés par l'utilisateur
+        $chatCount = $entityManager->getRepository(Chat::class)->count(['user' => $user]);
 
         // créer un formulaire à partir de la classe AppScenarioType
         $form = $this->createForm(AppScenarioType::class);
@@ -33,10 +40,19 @@ class AppController extends AbstractController
         // initialise scenario comme une string vide
         $scenario = '';
 
+        // Vérifie si l'utilisateur non-premium a atteint la limite de chats gratuits
+        if (!$isPremium && $chatCount >= $maxFreeChats) {
+            // Afficher un message indiquant qu'ils ont atteint la limite
+            return $this->render('app/limit_reached.html.twig', [
+                'warning' => 'Vous avez atteint la limite de chats gratuits. Veuillez passer à un abonnement premium pour continuer à créer des chats et intéragir avec.',
+            ]);
+        }
+
         // Si le formulaire est soumis, valide
         if ($form->isSubmitted() && $form->isValid()) {
             // Si la requête est une requête AJAX
             if ($request->isXmlHttpRequest()) {
+                
                 // Récupère les données du formulaire et les stocke dans $data
                 $data = $form->getData();
 
@@ -79,7 +95,8 @@ class AppController extends AbstractController
                 $date = new \DateTimeImmutable();
                 $chat->setCreatedAt($date);
                 $chat->setTitle($data['characterName'] . ' - ' . $data['languageName'] . ' - ' . $date->format('Y-m-d H:i:s'));
-
+                $chat->setCharacterName($data['characterName']);
+                $chat->setLanguage($data['languageName']);
 
                 // Crée un client OpenAI avec la clé d'API
                 $openAiClient = OpenAI::client('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');
@@ -155,26 +172,45 @@ class AppController extends AbstractController
             'content' => $userInput,
         ];
 
-        // Récupère l'historique des messages du chat pour le contexte
+        // Pour éviter de se faire spam
+        // Étape 1: Récupération de l'historique des messages
+        // Convertir le JSON contenant l'historique des messages en un tableau PHP.
         $existingMessages = json_decode($chat->getMessages(), true);
-        $existingMessages[] = $userMessage; // Ajoute le message de l'utilisateur au contexte existant
 
-        // Convertit le tableau de messages en une chaîne JSON, puis limite cette chaîne aux 10000 derniers caractères
-        $messagesString = json_encode($existingMessages);
-        $limitedMessagesString = substr($messagesString, max(0, strlen($messagesString) - 10000));
+        // Ajouter le dernier message de l'utilisateur au tableau des messages existants.
+        $existingMessages[] = $userMessage;
 
-        // Découpe les messages pour s'assurer que le JSON est valide et reconvertit en tableau
-        $limitedMessages = json_decode($limitedMessagesString, true);
-        if ($limitedMessages === null) {
-            // Si la découpe crée un JSON invalide, on utilise seulement le message le plus récent
-            $limitedMessages = [$userMessage];
+        // Étape 2: Limitation du nombre de messages pour ne pas dépasser la limite de taille
+        // Initialiser un tableau vide pour stocker les messages qui seront inclus dans le contexte final.
+        $messagesToFit = [];
+
+        // Initialiser la variable pour suivre la longueur totale du JSON.
+        $jsonLength = 0;
+
+        // Parcourir les messages existants, du plus récent au plus ancien.
+        // Utiliser array_reverse pour inverser l'ordre des messages.
+        foreach (array_reverse($existingMessages) as $message) {
+            // Convertir le message actuel en JSON pour calculer sa taille.
+            $tempJson = json_encode([$message]);
+
+            // Ajouter la taille du message JSON actuel à la longueur totale.
+            $jsonLength += strlen($tempJson);
+
+            // Vérifier si l'ajout de ce message dépasse la limite de taille de 10000 caractères.
+            if ($jsonLength > 10000) break; // Si oui, sortir de la boucle.
+
+            // Si la limite n'est pas dépassée, ajouter le message au début du tableau.
+            // Utiliser array_unshift pour conserver l'ordre chronologique.
+            array_unshift($messagesToFit, $message);
         }
 
-        // Prépare le contexte pour l'API
+        // Étape 3: Préparation du contexte pour l'API
+        // Créer le tableau représentant le contexte à envoyer à l'API.
         $context = [
-            'model' => 'gpt-3.5-turbo',
-            'messages' => $limitedMessages,
+            'model' => 'gpt-3.5-turbo', // Spécifier le modèle à utiliser.
+            'messages' => $messagesToFit, // Inclure les messages sélectionnés dans le contexte.
         ];
+
 
         // Crée un client OpenAI avec la clé d'API
         $openAiClient = OpenAI::client('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');
@@ -206,6 +242,55 @@ class AppController extends AbstractController
             'userInput' => $userInput, // Envoyer en retour si nécessaire
             'responseFromApi' => $apiResponseContent,
             'chatId' => $chatId,
+        ]);
+    }
+    #[Route('/summarize-chat/{chatId}', name: 'summarize_chat', methods: ['GET'])]
+    public function summarizeChat(Request $request, EntityManagerInterface $entityManager, int $chatId): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not authenticated'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $chat = $entityManager->getRepository(Chat::class)->find($chatId);
+        if (!$chat || $chat->getUser() !== $user) {
+            return new JsonResponse(['error' => 'Chat not found or access denied'], Response::HTTP_FORBIDDEN);
+        }
+
+        $existingMessages = json_decode($chat->getMessages(), true);
+        $storyText = '';
+        foreach ($existingMessages as $message) {
+            $storyText .= $message['content'] . "\n";
+        }
+
+        // Assuming you are summarizing the content, you might still need a prompt but with less configuration like max_tokens.
+        $prompt = "Please summarize this conversation as write the story as a novel, with a few chapters and litterary style. Forget about the words limitation, you shoud make it the novel the longer possible and written in " . $chat->getLanguage() . ":" . $storyText;
+
+        // Get the API key from environment variables
+        // $apiKey = getenv('OPENAI_API_KEY');
+
+        // Instantiate the OpenAI client with the API key
+        $openAiClient = OpenAI::client('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');
+
+        // Adapted usage similar to other methods, assuming they interact with 'chat' feature
+        $gptResponse = $openAiClient->chat()->create([
+            'model' => 'gpt-3.5-turbo', // Consistency with other methods
+            'messages' => [['role' => 'system', 'content' => $prompt]], // Encapsulate prompt as a system message
+        ]);
+
+        // Assuming the response format is similar to chat responses
+        $summarizedStory = "";
+        if (isset($gptResponse->toArray()['choices'][0]['message']['content'])) {
+            $summarizedStory = $gptResponse->toArray()['choices'][0]['message']['content'];
+        }
+
+        $chat->setStory($summarizedStory);
+        $entityManager->persist($chat);
+        $entityManager->flush();
+
+        return new JsonResponse([
+            'success' => true,
+            'summarizedStory' => $summarizedStory,
         ]);
     }
 }
