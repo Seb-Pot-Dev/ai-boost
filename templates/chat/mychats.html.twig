@@ -18,7 +18,7 @@
     <tbody class="divide-y divide-gray-200">
 {% for chat in chats %}
       <tr>
-        <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">John Doe</td>
+        <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ chat.characterName}}</td>
         <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ chat.title }}</td>
         <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ chat.createdAt|date('Y-m-d H:i') }}</td>
         <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ chat.messages|slice(32, 52) }}</td>
