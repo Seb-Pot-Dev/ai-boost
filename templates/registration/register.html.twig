@@ -4,28 +4,40 @@
 
 {% block body %}
 
-<section class="bg-white">
-    {{ form_start(registrationForm)}}
-  <div class="lg:grid lg:min-h-screen lg:grid-cols-12">
-    <section class="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
-      <!-- Image and welcome text section (same as your Tailwind component) -->
+<section class="pt-16">
+  <div class="lg:grid  lg:grid-cols-12">
+    <section class="flex h-32 items-end  lg:col-span-5 lg:h-full xl:col-span-6">
+      <div class="flex md:flex-col flex-col-reverse items-center justify-center h-full w-full">
+        <p class="text-g-violet sm:text-2xl xl:text-3xl sm:pb-6 xl:py-4">
+          Start for free today!
+        </p>
+        
+        <div class="candle scale-50 md:scale-100">
+          <div class="candle-flame"></div>
+          <div class="candle-wick"></div>
+          <div class="candle-wax"></div>
+          <div class="candle-stand"></div>
+        </div>
+
+        <p class="text-g-violet sm:text-l xl:text-xl xl:py-1">
+          Discover the world of AI assisted solo roleplay.
+        </p>
+      </div>
     </section>
 
     <main class="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
       <div class="max-w-xl lg:max-w-3xl">
-        <!-- Remove the action attribute or set it to '#' -->
+          {{ form_start(registrationForm)}}
           {% for flash_error in app.flashes('verify_email_error') %}
           <div class="col-span-6 alert alert-danger" role="alert">
             {{ flash_error }}
           </div>
           {% endfor %}
-
           {{ form_errors(registrationForm) }}
-
           <div class="col-span-6">
             {{ form_row(registrationForm.email, {
               attr: {'class': 'p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'},
-              label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+              label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
             }) }}
           </div>
 
@@ -34,7 +46,7 @@
               label: 'Password',
               type: 'password',
               attr: {'class': 'p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'},
-              label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+              label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
             }) }}
           </div>
           
@@ -43,8 +55,8 @@
             {{ form_row(registrationForm.plainPassword.second, {
               label: 'Confirm Password',
               type: 'password',
-              attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm'},
-              label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+              attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-violet shadow-sm'},
+              label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
             }) }}
           </div>
 

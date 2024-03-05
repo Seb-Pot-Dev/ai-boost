@@ -10,10 +10,30 @@
     --almond: #eae0d5ff;
     --khaki: #c6ac8fff;
     --walnut-brown: #5e503fff;
+
+    --magnolia: #f4effaff;
+    --russian-violet: #2f184bff;
+    --tekhelet: #532b88ff;
+    --amethyst: #9b72cfff;
+    --wisteria: #c8b1e4ff;
+
+    --pale-azure: #97dffcff;
+    --tropical-indigo: #858ae3ff;
+    --iris: #613dc1ff;
+    --indigo: #4e148cff;
+    --russian-violet: #2c0735ff;
+
+    /* GPT style */
+    --g-violet: #D292FF;
+    --g-dark-blue: #00002E;
+    --g-light-blue: #3C46FF;
+    --g-light-blue-hovered: #0000FF;
+    --g-dark-red:  #170005;
+
 }
 
 .radient-background{
-    background: linear-gradient(225deg, var(--mint-green), var(--seasalt), var(--apricot));
+    background: linear-gradient(225deg, var(--g-dark-red), var(--g-dark-blue));
     height: 100%;
     width: 100%;
 }
@@ -118,3 +138,12 @@
 scrollbar-width: none;  /* Firefox */
 }
 
+navbar{
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+contenu{
+  height: 100vh;
+  padding-top: 4rem;
+}

@@ -10,7 +10,7 @@
 <h1 class="bg-red-500 w-full text-7xl"></h1>
                 
     {# <div class="flex justify-center"> #}
-        <section id="formSection" class="min-h-screen flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
+        <section id="formSection" class=" flex justify-center px-8 sm:px-12 lg:col-span-7 lg:px-16 xl:col-span-6">
             <div class="max-w-xl lg:max-w-3xl">
 
             {{ form_start(form, {
@@ -24,16 +24,16 @@
                 <div class="col-span-6">
                     {{ form_row(form.characterName, {
                     attr: {
-                        'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm'
+                        'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-violet shadow-sm'
                         },
-                    label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
                     }) }}
                 </div>
 
                 {# <div class="col-span-6 sm:col-span-3">
                     {{ form_row(form.genreNames, {
                     attr: {'class': 'p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'},
-                    label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
                     }) }}
                 </div> #}
             
@@ -42,7 +42,7 @@
                     {# Itération sur chaque choix pour genreNames #}
                     {% for genreName in form.genreNames %}
                     <div>
-                    <label class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-gray-900 hover:border-gray-300 has-[:checked]:bg-cambridge-blue has-[:checked]:text-white has-[:checked]:border-black transform active:scale-75 transition-transform">
+                    <label class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-gray-900 hover:border-gray-300 has-[:checked]:bg-g-violet has-[:checked]:text-white has-[:checked]:border-black transform active:scale-75 transition-transform">
                     {{ form_widget(genreName, {
                         'attr': {'class': 'sr-only'}
                     }) }}
@@ -59,22 +59,22 @@
 
                 <div class="col-span-6 sm:col-span-3">
                     {{ form_row(form.authorName, {
-                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm'},
-                    label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-violet shadow-sm'},
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
                     }) }}
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
                     {{ form_row(form.wordsCount, {
-                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm'},
-                    label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-violet shadow-sm'},
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
                     }) }}
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
                     {{ form_row(form.languageName, {
-                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm'},
-                    label_attr: {'class': 'mt-2 block text-sm font-medium text-gray-700'},
+                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-violet shadow-sm'},
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
                     }) }}
                 </div>
 
@@ -84,7 +84,7 @@
                         <div class="mt-6 col-span-6 sm:col-span-3 flex justify-center">
                         
                         {{ form_row(form.submit, {
-                            attr: {'class': 'mt-2 inline-block shrink-0 rounded-md border border-cambridge-blue bg-cambridge-blue px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-cambridge-blue focus:outline-none focus:ring active:text-blue-500'},
+                            attr: {'class': 'mt-2 inline-block shrink-0 rounded-md border border-g-violet bg-g-violet px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-g-violet focus:outline-none focus:ring active:text-blue-500'},
                         }) }}
                     </div>
                 {{ form_end(form)}}
@@ -102,7 +102,7 @@
 
             <div>
                 <h3 class="text-lg/tight font-medium text-gray-900">Maitre du jeu</h3>
-                <p class="mt-0.5 text-gray-700" id="gptOutputs">
+                <p class="mt-0.5 text-g-violet" id="gptOutputs">
                 {# GPT outputs heres #}
                 </p>
             </div>
@@ -202,7 +202,7 @@ function addResponseToChat(responseText, responseType) {
     textContainerDiv.appendChild(characterName);
 
     const responseContent = document.createElement("p");
-    responseContent.className = "mt-0.5 text-gray-700";
+    responseContent.className = "mt-0.5 text-g-violet";
     responseContent.textContent = responseText;
     textContainerDiv.appendChild(responseContent);
 
@@ -251,6 +251,21 @@ sendButton.addEventListener('click', function() {
         // Ici, affiche l'erreur à l'utilisateur au lieu de simplement l'enregistrer dans la console
     });
 });
+</script>
+<script>
+function scrollToBottom() {
+    const chatContainer = document.getElementById('responseSection');
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+// Faites défiler vers le bas lorsque la page charge
+document.addEventListener('DOMContentLoaded', scrollToBottom);
+
+// Faites défiler vers le bas chaque fois qu'un nouveau message est ajouté
+// Supposons que cette fonction est appelée chaque fois qu'un message est ajouté
+function onNewMessage() {
+    scrollToBottom();
+}
 </script>
 
 {% endblock %}

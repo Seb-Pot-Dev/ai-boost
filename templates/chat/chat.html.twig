@@ -3,8 +3,6 @@
 {% block title %}Hello ChatController!{% endblock %}
 
 {% block body %}
-
-<main class="radient-background min-h-screen hide-scrollbar">
     <!-- Bouton pour déclencher le résumé -->
     {% if chat.story is not empty %}
     <button id="toggleModalButton"   class="relative inline-block px-4 py-2 font-medium group">
@@ -28,13 +26,13 @@
     <div id="summaryModal" tabindex="-1" aria-hidden="true" class="summarize-modal hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative p-4 w-full max-w-2xl max-h-full">
             <!-- Modal content -->
-            <div id="summaryModalContent" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div id="summaryModalContent" class="relative bg-white rounded-lg shadow dark:bg-g-violet">
                 <!-- Modal header -->
                 <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                     <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                         Résumé du Chat
                     </h3>
-                    <button id="hideModalBtn" class="px-2 py-1 rounded bg-red-500 text-gray-900 hover:bg-red-400 hover:text-gray-700 ">X</button>
+                    <button id="hideModalBtn" class="px-2 py-1 rounded bg-red-500 text-gray-900 hover:bg-red-400 hover:text-g-violet ">X</button>
                 </div>
                     <!-- Modal body -->
                 <div class="p-4 md:p-5 space-y-4">
@@ -51,9 +49,9 @@
     </div>
 
     <!-- Section de Chat -->
-    <section id="chatSection" class="max-h-screen flex flex-col items-start justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
+    <section id="chatSection" class="max-h-screen flex flex-col items-start justify-center px-8 sm:px-12">
         <!-- Ici, vous pouvez ajouter le code pour afficher les messages précédents du chat -->
-        <div id="responseSection" class="overflow-scroll hide-scrollbar"></div>
+        <div id="responseSection" class=" overflow-scroll hide-scrollbar"></div>
         <!-- Formulaire pour envoyer une nouvelle réponse -->
         <div class="flex justify-center order-1 w-full">
             <div class="w-6/12 overflow-hidden rounded-lg border border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
@@ -64,7 +62,6 @@
             </div>
         </div>
     </section>
-</main>
 
 {# Script pour la gestion de REPONSE #}
 <script>
@@ -97,7 +94,7 @@ function addResponseToChat(responseText, responseType) {
     textContainerDiv.appendChild(characterName);
 
     const responseContent = document.createElement("p");
-    responseContent.className = "mt-0.5 text-gray-700";
+    responseContent.className = "mt-0.5 text-g-violet";
     responseContent.textContent = responseText;
     textContainerDiv.appendChild(responseContent);
 
@@ -120,6 +117,8 @@ sendButton.addEventListener('click', function() {
     }
     addResponseToChat(responseText, 'user'); // Affiche immédiatement la réponse de l'utilisateur dans le chat
     userResponse.value = ''; // Efface le texte de l'utilisateur
+    // scroll vers le bas
+    scrollToBottom();
 
     let formData = new FormData();
     formData.append('response', responseText);
@@ -139,6 +138,8 @@ sendButton.addEventListener('click', function() {
     .then(data => {
         if (data && data.responseFromApi) {
             addResponseToChat(data.responseFromApi, 'gpt'); // Ajoute la réponse de GPT
+            // scroll vers le bas
+            scrollToBottom();
         }
     })
     .catch(error => {
@@ -224,5 +225,18 @@ messages.forEach(message => {
         });
     }
 </script>
+<script>
+function scrollToBottom() {
+    const chatContainer = document.getElementById('responseSection');
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
 
+// Faites défiler vers le bas lorsque la page charge
+document.addEventListener('DOMContentLoaded', scrollToBottom);
+
+// Faites défiler vers le bas chaque fois qu'un nouveau message est ajouté
+// Supposons que cette fonction est appelée chaque fois qu'un message est ajouté
+function onNewMessage() {
+}
+</script>
 {% endblock %}

@@ -16,7 +16,9 @@
     </head>
     <body>
         {% include "base/_navbar.html.twig"%}
+        <section class="pt-16 min-h-screen radient-background">
         {% block body %}{% endblock %}
+        </section>
     </body>
     {{ encore_entry_script_tags('app') }}
 </html>
