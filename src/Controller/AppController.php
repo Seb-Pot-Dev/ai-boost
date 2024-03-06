@@ -13,9 +13,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class AppController extends AbstractController
 {
+   private $openAiApiKey;
+   public function __construct(ParameterBagInterface $params)
+   {
+       // Accéder à la clé d'API configurée
+       $this->openAiApiKey = $params->get('OPENAI_API_KEY');
+   }
     #[Route('/app', name: 'app')]
     public function index(Request $request, User $user = null, EntityManagerInterface $entityManager): Response
     {
@@ -52,7 +59,7 @@ class AppController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Si la requête est une requête AJAX
             if ($request->isXmlHttpRequest()) {
-                
+
                 // Récupère les données du formulaire et les stocke dans $data
                 $data = $form->getData();
 
@@ -99,7 +106,7 @@ class AppController extends AbstractController
                 $chat->setLanguage($data['languageName']);
 
                 // Crée un client OpenAI avec la clé d'API
-                $openAiClient = OpenAI::client('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');
+                $openAiClient = OpenAI::client($this->openAiApiKey);
                 // intéroge l'API GPT-3.5 Turbo avec le "initialPrompt", correspondant au prompt initial formaté 
                 $gptResponse = $openAiClient->chat()->create([
                     'model' => 'gpt-3.5-turbo',
@@ -119,6 +126,12 @@ class AppController extends AbstractController
 
                 // Ajoute ce premier message à Chat.messages
                 $chat->setMessages($firstMessage);
+
+                // Incrémente le nombre de chats/message de l'utilisateur (si = null, considère comme 0 et ajoute 1)
+                $user->setNbChats(($user->getNbChats() ?? 0) + 1);
+                $user->setNbApiRequests(($user->getNbApiRequests() ?? 0) + 1);
+                $entityManager->persist($user);
+
                 // Enregistrement du chat dans la base de données
                 $entityManager->persist($chat);
                 $entityManager->flush();
@@ -147,6 +160,7 @@ class AppController extends AbstractController
     public function handleChatInteraction(Request $request, EntityManagerInterface $entityManager, int $chatId): JsonResponse
     {
         $user = $this->getUser();
+        $maxFreeRequests = 5;
         if (!$user) {
             // Assure-toi que l'utilisateur est connecté
             return new JsonResponse(['error' => 'User not authenticated'], Response::HTTP_UNAUTHORIZED);
@@ -156,6 +170,15 @@ class AppController extends AbstractController
         if (!$chat || $chat->getUser() !== $user) {
             // Vérifie que le chat existe et appartient à l'utilisateur connecté
             return new JsonResponse(['error' => 'Chat not found or access denied'], Response::HTTP_FORBIDDEN);
+        }
+
+        // Vérifie si l'utilisateur non-premium a atteint la limite de chats gratuits
+        if (!$user->isPremium() && $user->getNbApiRequests() >= $maxFreeRequests) {
+            // Construire la réponse pour indiquer qu'ils ont atteint la limite, sous forme de JSON
+            return new JsonResponse([
+                'success' => false,
+                'warning' => 'Vous avez atteint la limite de messages gratuits. Veuillez passer à un abonnement premium pour continuer à utiliser Rolepl.ai',
+            ]);
         }
 
         // Récupère la réponse de l'utilisateur à partir des données FormData
@@ -213,7 +236,7 @@ class AppController extends AbstractController
 
 
         // Crée un client OpenAI avec la clé d'API
-        $openAiClient = OpenAI::client('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');
+        $openAiClient = OpenAI::client($this->openAiApiKey);
 
         // Intéroge l'API et assigne la réponse à la variable $gptResponse
         $gptResponse = $openAiClient->chat()->create($context);
@@ -232,6 +255,11 @@ class AppController extends AbstractController
         $updatedMessages = json_encode($existingMessages);
         $chat->setMessages($updatedMessages);
 
+        // Incrémente le nombre de requêtes API de l'utilisateur (si = null, considère comme 0 et ajoute 1)
+        $user->setNbApiRequests(($user->getNbApiRequests() ?? 0) + 1);
+
+        $entityManager->persist($user);
+
         // Sauvegarde les changements dans la base de données
         $entityManager->persist($chat);
         $entityManager->flush();
@@ -248,13 +276,21 @@ class AppController extends AbstractController
     public function summarizeChat(Request $request, EntityManagerInterface $entityManager, int $chatId): JsonResponse
     {
         $user = $this->getUser();
+        $maxFreeRequests = 5;
         if (!$user) {
             return new JsonResponse(['error' => 'User not authenticated'], Response::HTTP_UNAUTHORIZED);
         }
-
         $chat = $entityManager->getRepository(Chat::class)->find($chatId);
         if (!$chat || $chat->getUser() !== $user) {
             return new JsonResponse(['error' => 'Chat not found or access denied'], Response::HTTP_FORBIDDEN);
+        }
+
+        // Vérifie si l'utilisateur non-premium a atteint la limite de chats gratuits
+        if (!$user->isPremium() && $user->getNbApiRequests() >= $maxFreeRequests) {
+            // Afficher un message indiquant qu'ils ont atteint la limite
+            return $this->render('app/limit_reached.html.twig', [
+                'warning' => 'Vous avez atteint la limite de messages gratuits. Veuillez passer à un abonnement premium pour continuer à utiliser Rolepl.ai',
+            ]);
         }
 
         $existingMessages = json_decode($chat->getMessages(), true);
@@ -269,8 +305,8 @@ class AppController extends AbstractController
         // Get the API key from environment variables
         // $apiKey = getenv('OPENAI_API_KEY');
 
-        // Instantiate the OpenAI client with the API key
-        $openAiClient = OpenAI::client('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');
+        // Crée un client OpenAI avec la clé d'API
+        $openAiClient = OpenAI::client($this->openAiApiKey);
 
         // Adapted usage similar to other methods, assuming they interact with 'chat' feature
         $gptResponse = $openAiClient->chat()->create([
