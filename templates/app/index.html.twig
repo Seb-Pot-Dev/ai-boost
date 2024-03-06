@@ -3,6 +3,21 @@
 {% block title %}Hello AppController!{% endblock %}
 
 {% block body %}
+{# Fenetre limitModal #}
+<div id="limitModal" class="fixed inset-0 bg-transparent backdrop-blur-sm items-center justify-center hidden z-50 w-full h-full top-0">
+    <div class="modal-content bg-white p-5 rounded-lg max-w-sm mx-auto text-gray-900">
+        <div class="modal-header flex justify-between items-center">
+            <h2 class="text-2xl font-bold">Limite atteinte</h2>
+            <button class="close text-2xl font-semibold" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body my-4">
+            <p id="limitWarning" class="text-base">Vous avez atteint votre limite de messages gratuits.</p>
+        </div>
+        <div class="modal-footer flex justify-end">
+            <button id="closeLimitModal" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-150" data-dismiss="modal">Fermer</button>
+        </div>
+    </div>
+</div>
 <main class="radient-background">
 <!-- Bouton pour déclencher le résumé -->
 
@@ -241,9 +256,14 @@ sendButton.addEventListener('click', function() {
         return response.json();
     })
     .then(data => {
-        
-        if (data && data.responseFromApi) {
+        if (data.success === false) {
+        // Affiche la fenêtre modale d'avertissement si l'utilisateur a atteint la limite
+        displayLimitModal(data.warning); // Affiche une fenêtre modale avec le message d'avertissement
+        }else if
+        (data && data.responseFromApi) {
             addResponseToChat(data.responseFromApi, 'gpt'); // Ajoute la réponse de GPT
+            // scroll vers le bas
+            scrollToBottom();
         }
     })
     .catch(error => {
@@ -266,6 +286,47 @@ document.addEventListener('DOMContentLoaded', scrollToBottom);
 function onNewMessage() {
     scrollToBottom();
 }
+</script>
+
+<script>
+// Fonction pour afficher la fenêtre modale d'avertissement
+function displayLimitModal(warningMessage) {
+     // Définit le message d'avertissement dans la modale
+    document.getElementById('limitWarning').textContent = warningMessage;
+
+    // Affiche la fenêtre modale avec Tailwind
+    var limitModal = document.getElementById('limitModal');
+    limitModal.classList.remove('hidden'); // Utilise Tailwind pour rendre la modale visible
+    limitModal.classList.add('flex', 'items-center', 'justify-center'); // Centrer la modale
+
+    // Obtient l'élément qui ferme la fenêtre limitModale
+    var closeBtn = limitModal.querySelector('[data-dismiss="limitModal"]');
+
+    // Quand l'utilisateur clique sur <span> (x), ferme la fenêtre limitModale
+    closeBtn.onclick = function() {
+        limitModal.classList.add('hidden'); // Utilise Tailwind pour cacher la modale
+        limitModal.classList.remove('flex', 'items-center', 'justify-center'); // Enlève les classes pour le centrage
+    }
+
+    // Quand l'utilisateur clique n'importe où en dehors de la fenêtre limitModale, elle se ferme
+    window.onclick = function(event) {
+        if (event.target == limitModal) {
+            limitModal.classList.add('hidden');
+            limitModal.classList.remove('flex', 'items-center', 'justify-center');
+        }
+    }
+}
+
+// Gestion de la fermeture de la fenêtre limitModale
+const limitModal = document.getElementById('limitModal');
+function closeLimitModal() {
+    if (limitModal.classList.contains('flex')) {
+        limitModal.classList.remove('flex');
+        limitModal.classList.add('hidden');
+    }
+}
+limitModal.addEventListener('click', closeLimitModal);
+
 </script>
 
 {% endblock %}
