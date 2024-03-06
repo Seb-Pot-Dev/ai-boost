@@ -3,31 +3,37 @@
 {% block title %}Hello ChatController!{% endblock %}
 
 {% block body %}
-<div class="flex">
-<div class="overflow-x-auto">
-    <table class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+<div class="flex items-center justify-center ">
+<div class="overflow-x-auto bg-transparent backdrop-blur">
+    <table class="min-w-full divide-y-2 divide-gray-200  text-sm ">
         <thead class="ltr:text-left rtl:text-right">
         <tr>
-            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Personnage</th>
-            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Titre</th>
-            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Création</th>
-            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Extrait</th>
+            <th class="whitespace-nowrap px-4 py-2  text-white text-xl font-bold">Personnage</th>
+            {# <th class="whitespace-nowrap px-4 py-2 font-medium text-white text-xl">Titre</th> #}
+            <th class="whitespace-nowrap px-4 py-2 text-white text-xl font-bold">Création</th>
+            <th class="whitespace-nowrap px-4 py-2 text-white text-xl font-bold">Extrait</th>
             <th class="px-4 py-2"></th>
         </tr>
         </thead>
     <tbody class="divide-y divide-gray-200">
 {% for chat in chats %}
       <tr>
-        <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ chat.characterName}}</td>
-        <td class="whitespace-nowrap px-4 py-2 text-g-violet">{{ chat.title }}</td>
-        <td class="whitespace-nowrap px-4 py-2 text-g-violet">{{ chat.createdAt|date('Y-m-d H:i') }}</td>
-        <td class="whitespace-nowrap px-4 py-2 text-g-violet">{{ chat.messages|slice(32, 52) }}</td>
+        <td class="whitespace-nowrap px-4 py-2 font-extrabold text-g-violet">{{ chat.characterName}}</td>
+        {# <td class="whitespace-nowrap px-4 py-2 text-g-violet">{{ chat.title }}</td> #}
+        <td class="whitespace-nowrap px-4 py-2 text-g-violet">{{ chat.createdAt|date('d/m/Y H:i') }}</td>
+        <td class="whitespace-nowrap px-4 py-2 text-g-violet">{{ chat.messages|slice(32, 52) }}...</td>
         <td class="whitespace-nowrap px-4 py-2">
           <a
             href="{{ path('view_chat', {'chatId': chat.id}) }}"
-            class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+            class="inline-block rounded bg-g-light-blue px-4 py-2 text-xs font-medium text-white hover:bg-g-light-blue-hovered"
           >
-            Reprendre
+            Continuer
+          </a>
+          <a
+            data-delete-url="{{ path('delete_chat', {'chatId': chat.id}) }}"
+            class="deleteButton cursor-pointer inline-block rounded bg-red-500 px-4 py-2 text-xs font-medium text-black hover:bg-red-700"
+          >
+            X
           </a>
         </td>
       </tr>
@@ -37,4 +43,28 @@
 </table>
 </div>
 </div>
+<script>
+// Récupère l'élément bouton par son identifiant
+  const deleteButtons = document.querySelectorAll('.deleteButton');
+
+  // Pour changer le texte du bouton (confirmation delete)
+  function changeButtonText() {
+      // Change le texte du bouton
+      deleteButton.innerText = 'Sure?';
+  }
+
+ // Ajoute un écouteur d'événements pour le clic sur chaque bouton
+  deleteButtons.forEach(function(deleteButton) {
+      deleteButton.addEventListener('click', function() {
+          // Vérifie si le texte du bouton est déjà "Sure?"
+          if (this.innerText === 'Supprimer?') {
+              // Redirige vers la route de suppression
+              window.location.href = this.getAttribute('data-delete-url');
+          } else {
+              // Change le texte du bouton en "Sure?"
+              this.innerText = 'Supprimer?';
+          }
+      });
+  });
+</script>
 {% endblock %}
