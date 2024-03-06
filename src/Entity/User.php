@@ -44,6 +44,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Chat::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $chats;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $nbApiRequests = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $nbChats = null;
+
     public function __construct()
     {
         $this->chats = new ArrayCollection();
@@ -174,6 +180,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $chat->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNbApiRequests(): ?int
+    {
+        return $this->nbApiRequests;
+    }
+
+    public function setNbApiRequests(?int $nbApiRequests): static
+    {
+        $this->nbApiRequests = $nbApiRequests;
+
+        return $this;
+    }
+
+    public function getNbChats(): ?int
+    {
+        return $this->nbChats;
+    }
+
+    public function setNbChats(?int $nbChats): static
+    {
+        $this->nbChats = $nbChats;
 
         return $this;
     }
