@@ -60,4 +60,19 @@ class ChatController extends AbstractController
             'messages' => $messages,
         ]);
     }
+    #[Route('/chat/{chatId}/delete', name: 'delete_chat')]
+    public function deleteChat(EntityManagerInterface $entityManager, int $chatId): Response
+    {
+        $user = $this->getUser();
+        $chat = $entityManager->getRepository(Chat::class)->findOneBy(['id' => $chatId, 'user' => $user]);
+
+        if (!$chat || !$user) {
+            throw $this->createNotFoundException('Chat not found or you do not have permission to access it');
+        }
+
+        $entityManager->remove($chat);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('list_user_chats');
+    }
 }
