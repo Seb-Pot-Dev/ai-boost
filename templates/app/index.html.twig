@@ -8,13 +8,13 @@
     <div class="modal-content bg-white p-5 rounded-lg max-w-sm mx-auto text-gray-900">
         <div class="modal-header flex justify-between items-center">
             <h2 class="text-2xl font-bold">Limite atteinte</h2>
-            <button class="close text-2xl font-semibold" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body my-4">
             <p id="limitWarning" class="text-base">Vous avez atteint votre limite de messages gratuits.</p>
         </div>
         <div class="modal-footer flex justify-end">
-            <button id="closeLimitModal" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-150" data-dismiss="modal">Fermer</button>
+            <button id="closeLimitModal" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 transition duration-150 cursor-pointer" data-dismiss="modal">Fermer</button>
+            <button href="{{ path('app_stripe') }}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-150 cursor-pointer">Devenir membre</button>
         </div>
     </div>
 </div>
@@ -318,14 +318,14 @@ function displayLimitModal(warningMessage) {
 }
 
 // Gestion de la fermeture de la fenêtre limitModale
-const limitModal = document.getElementById('limitModal');
+const closeLimitModalBtn = document.getElementById('closeLimitModal');
 function closeLimitModal() {
     if (limitModal.classList.contains('flex')) {
         limitModal.classList.remove('flex');
         limitModal.classList.add('hidden');
     }
 }
-limitModal.addEventListener('click', closeLimitModal);
+closeLimitModalBtn.addEventListener('click', closeLimitModal);
 
 </script>
 
