@@ -31,6 +31,19 @@
     --g-dark-red:  #170005;
 
 }
+a:hover, button:hover{
+  cursor: pointer;
+}
+
+.title-text-shadow:hover{
+  text-shadow: 0px 0px 35px #FBBF24;
+  transition: text-shadow 0.15s ease-in-out;
+}
+.title-text-shadow{
+  text-shadow: none;
+  transition: text-shadow 0.25s ease-in-out;
+}
+
 
 .radient-background{
     background: linear-gradient(225deg, var(--g-dark-red), var(--g-dark-blue));
@@ -146,4 +159,16 @@ navbar{
 contenu{
   height: 100vh;
   padding-top: 4rem;
+}
+
+/* cursor */
+.cursor-follower {
+  position: fixed; /* Ensures it's positioned relative to the viewport */
+  top: 0;
+  left: 0;
+  width: 100%; /* These dimensions ensure it covers the entire viewport */
+  height: 100%;
+  pointer-events: none; /* Prevents it from interfering with mouse events */
+  z-index: 9999; /* A high value to ensure it's on top of other elements */
+  transition: background 0.2s; /* Optional: Smooth transition for the gradient movement */
 }
