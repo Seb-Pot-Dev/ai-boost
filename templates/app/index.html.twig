@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AppController!{% endblock %}
+{% block title %}✨Nouvelle partie✨{% endblock %}
 
 {% block body %}
 {# Fenetre limitModal #}
@@ -18,93 +18,132 @@
         </div>
     </div>
 </div>
-<main class="radient-background">
-<!-- Bouton pour déclencher le résumé -->
-
-
-<h1 class="bg-red-500 w-full text-7xl"></h1>
-                
+<main class="radient-background">                
     {# <div class="flex justify-center"> #}
-        <section id="formSection" class=" flex justify-center px-8 sm:px-12 lg:col-span-7 lg:px-16 xl:col-span-6">
-            <div class="max-w-xl lg:max-w-3xl">
-
-            {{ form_start(form, {
-                attr: {
-                    'id': 'my-form',
-                    'class': 'w-full h-full',
-                    }
-                })
-            }}
-
-                <div class="col-span-6">
-                    {{ form_row(form.characterName, {
+        <section id="formSection" class=" flex justify-center items-center px-8 sm:px-12 lg:col-span-7 lg:px-16 xl:col-span-6">
+            <div class="max-w-xl lg:max-w-3xl">    
+            <h1 class="flex items-center justify-center text-2xl text-yellow-400 font-medium">✨Configurez votre partie✨</h1>
+                {{ form_start(form, {
                     attr: {
-                        'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-violet shadow-sm'
-                        },
-                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
-                    }) }}
-                </div>
+                        'id': 'my-form',
+                        'class': 'w-full h-full flex flex-col items-center justify-center',
+                        }
+                    })
+                }}
 
-                {# <div class="col-span-6 sm:col-span-3">
-                    {{ form_row(form.genreNames, {
-                    attr: {'class': 'p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'},
-                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
-                    }) }}
-                </div> #}
-            
-                <fieldset class="flex flex-wrap gap-3 max-w-64 items-center justify-center">
-                    <legend class="sr-only">Genre Names</legend>
-                    {# Itération sur chaque choix pour genreNames #}
-                    {% for genreName in form.genreNames %}
-                    <div>
-                    <label class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-gray-900 hover:border-gray-300 has-[:checked]:bg-g-violet has-[:checked]:text-white has-[:checked]:border-black transform active:scale-75 transition-transform">
-                    {{ form_widget(genreName, {
-                        'attr': {'class': 'sr-only'}
-                    }) }}
-                    {# Utilisation du label du genre comme texte du bouton #}
-                    <p class="text-sm font-medium">{{ genreName.vars.label }}</p>
-                    </label>
-                </div>
-                {% endfor %}
-                </fieldset>
-                {{ form_errors(form.genreNames) }}
-
-
-
-
-                <div class="col-span-6 sm:col-span-3">
-                    {{ form_row(form.authorName, {
-                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-violet shadow-sm'},
-                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
-                    }) }}
-                </div>
-
-                <div class="col-span-6 sm:col-span-3">
-                    {{ form_row(form.wordsCount, {
-                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-violet shadow-sm'},
-                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
-                    }) }}
-                </div>
-
-                <div class="col-span-6 sm:col-span-3">
-                    {{ form_row(form.languageName, {
-                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-violet shadow-sm'},
-                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
-                    }) }}
-                </div>
-
-
-
-
-                        <div class="mt-6 col-span-6 sm:col-span-3 flex justify-center">
-                        
-                        {{ form_row(form.submit, {
-                            attr: {'class': 'mt-2 inline-block shrink-0 rounded-md border border-g-violet bg-g-violet px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-g-violet focus:outline-none focus:ring active:text-blue-500'},
+                    <div class="col-span-6">
+                        {{ form_row(form.characterName, {
+                        attr: {
+                            'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-dark-blue shadow-sm'
+                            },
+                        label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet flex items-center justify-center'}, 
                         }) }}
                     </div>
-                {{ form_end(form)}}
+
+                    {# <div class="col-span-6 sm:col-span-3">
+                        {{ form_row(form.genreNames, {
+                        attr: {'class': 'p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'},
+                        label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
+                        }) }}
+                    </div> #}
+                
+                    <fieldset class=" flex flex-wrap gap-1 max-w-64 items-center justify-center">
+                        <p class="text-g-violet mt-2 block text-sm font-medium flex items-center justify-center">Choisissez un ou plusieurs genres</p>
+                        {# Itération sur chaque choix pour genreNames #}
+                        {% for genreName in form.genreNames %}
+                        <div>
+                        <label class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-g-dark-blue hover:border-gray-300 has-[:checked]:bg-g-violet has-[:checked]:text-white has-[:checked]:border-black transform active:scale-75 transition-transform">
+                        {{ form_widget(genreName, {
+                            'attr': {'class': 'sr-only'}
+                        }) }}
+                        {# Utilisation du label du genre comme texte du bouton #}
+                        <p class="text-sm font-medium">{{ genreName.vars.label }}</p>
+                        </label>
+                    </div>
+                    {% endfor %}
+                    </fieldset>
+                    {{ form_errors(form.genreNames) }}
+
+
+
+
+                    <div class="">
+                        {{ form_row(form.authorName, {
+                        attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-dark-blue shadow-sm'},
+                        label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
+                        }) }}
+                    </div>
+
+                    {# <div class="col-span-6 sm:col-span-3">
+                        {{ form_row(form.wordsCount, {
+                        attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-violet shadow-sm'},
+                        label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
+                        }) }}
+                    </div> #}
+
+                    <fieldset class="flex flex-col flex-wrap gap-1 max-w-64 items-center justify-center">
+                        <p class="text-g-violet mt-2 block text-sm font-medium">Longueur des réponses</p>
+                        {# Itération sur chaque choix pour genreNames #}
+                        <div class="flex gap-1">
+                        {% for wordsCount in form.wordsCount %}
+                            <div>
+                                <label class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-g-dark-blue hover:border-gray-300 has-[:checked]:bg-g-violet has-[:checked]:text-white has-[:checked]:border-black transform active:scale-75 transition-transform">
+                                {{ form_widget(wordsCount, {
+                                    'attr': {'class': 'sr-only'}
+                                }) }}
+                                {# Utilisation du label du genre comme texte du bouton #}
+                                <p class="text-sm font-medium">{{ wordsCount.vars.label }}</p>
+                                </label>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </fieldset>
+                    {{ form_errors(form.wordsCount) }}
+
+                    {# <div class="col-span-6 sm:col-span-3">
+                        {{ form_row(form.languageName, {
+                        attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-dark-blue shadow-sm'},
+                        label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
+                        }) }}
+                    </div> #}
+
+                    <fieldset class="flex flex-col flex-wrap gap-1 max-w-64 items-center justify-center">
+                        <p class="text-g-violet mt-2 block text-sm font-medium">Langue</p>
+                        {# Itération sur chaque choix pour genreNames #}
+                        <div class="flex gap-1">
+                        {% for language in form.languageName %}
+                            <div>
+                                <label class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-g-dark-blue hover:border-gray-300 has-[:checked]:bg-g-violet has-[:checked]:text-white has-[:checked]:border-black transform active:scale-75 transition-transform">
+                                {{ form_widget(language, {
+                                    'attr': {'class': 'sr-only'}
+                                }) }}
+                                {# Utilisation du label du genre comme texte du bouton #}
+                                <p class="text-sm font-medium">{{ language.vars.label }}</p>
+                                </label>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </fieldset>
+                    {{ form_errors(form.languageName) }}
+
+                    <div class="mt-2 md:mt-4 flex justify-center">
+    <div class="cursor-pointer relative inline-block px-4 py-2 font-medium group">
+        <span class="absolute inset-0 w-full h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-g-violet group-hover:-translate-x-0 group-hover:-translate-y-0"></span>
+        <span class="absolute inset-0 w-full h-full bg-g-dark-blue border-2 border-g-violet group-hover:bg-g-violet"></span>
+        {{ form_row(form.submit, {
+            'attr': {
+                'class': 'relative text-g-violet group-hover:text-white cursor-pointer border-none bg-transparent',
+            }
+        }) }}
+    </div>
+</div>
+
+
+
+                        
+                    {{ form_end(form)}}
+                </div>
             </div>
-        </div>
     </section>
 
     <section id="chatSection"  class=" max-h-screen flex flex-col items-start justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6" style="display: none">
@@ -206,14 +245,14 @@ function addResponseToChat(responseText, responseType) {
     imageElement.alt = responseType === 'user' ? "Avatar de l'utilisateur" : "Avatar de GPT";
     imageElement.className = "size-20 rounded-lg object-cover";
     
-    // Ajoutez l'élément img à la div externe
+    // Ajouter l'élément img à la div externe
     responseDiv.appendChild(imageElement);
 
-    // Créez et configurez le h3 pour le nom du personnage
+    // Créer et configurez le h3 pour le nom du personnage
     const characterName = document.createElement("h3");
-    characterName.className = "text-lg font-medium text-gray-900";
+    characterName.className = "text-lg font-medium text-white";
     characterName.textContent = responseType === 'user' ? "Utilisateur" : "GPT"; // Changez cela selon votre besoin
-    // Ajoutez le h3 à la div de texte
+    // Ajouter le h3 à la div de texte
     textContainerDiv.appendChild(characterName);
 
     const responseContent = document.createElement("p");

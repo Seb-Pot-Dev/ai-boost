@@ -1,14 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}✨Se connecter à Rolepl.ai✨{% endblock %}
 
 {% block body %}
 <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-lg text-center">
-    <h1 class="text-2xl font-bold sm:text-3xl text-g-violet">Get started today!</h1>
+    <h1 class="text-2xl font-bold sm:text-3xl text-g-violet">Se connecter à Rolepl.ai✨</h1>
 
     <p class="mt-4 text-gray-500">
-      If you have an account, log in with your email address.
+      Si vous avez un compte, connectez-vous avec votre email et votre mot de passe.
     </p>
   </div>
 
@@ -19,7 +19,7 @@
 
     {% if app.user %}
       <div class="mb-3 text-sm text-g-violet">
-        You are logged in as {{ app.user.userIdentifier }}, <a class="underline" href="{{ path('app_logout') }}">Logout</a>
+        Vous êtes connectez en tant que {{ app.user.userIdentifier }}, <a class="underline" href="{{ path('app_logout') }}">Se déconnecter</a>
       </div>
     {% endif %}
 
@@ -27,7 +27,7 @@
       <label for="inputEmail" class="sr-only">Email</label>
 
       <div class="relative">
-        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm" placeholder="Enter email" autocomplete="email" required autofocus>
+        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm" placeholder="Email..." autocomplete="email" required autofocus>
 
         <span class="absolute inset-y-0 right-0 grid place-content-center px-4">
             <svg
@@ -49,10 +49,10 @@
     </div>
 
     <div>
-      <label for="inputPassword" class="sr-only">Password</label>
+      <label for="inputPassword" class="sr-only">Mot de passe</label>
 
       <div class="relative">
-        <input type="password" name="password" id="inputPassword" class="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm" placeholder="Enter password" autocomplete="current-password" required>
+        <input type="password" name="password" id="inputPassword" class="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm" placeholder="Mot de passe..." autocomplete="current-password" required>
 
         <span class="absolute inset-y-0 right-0 grid place-content-center px-4">
             <svg
@@ -83,12 +83,12 @@
 
     <div class="flex items-center justify-between">
       <p class="text-sm text-gray-500">
-        No account?
-        <a class="underline" href="#">Sign up</a>
+        Pas encore de compte?
+        <a class="underline" href="#">S'inscrire</a>
       </p>
 
       <button type="submit" class="inline-block rounded-lg bg-g-light-blue hover:bg-g-light-blue-hovered px-5 py-3 text-sm font-medium text-white">
-        Sign in
+        Se connecter
       </button>
     </div>
   </form>

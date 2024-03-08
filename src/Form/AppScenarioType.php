@@ -19,18 +19,18 @@ class AppScenarioType extends AbstractType
     {
         $builder
             ->add('characterName', TextType::class, [
-                'label' => 'Name of your character',
+                'label' => 'Nom de votre personnage',
                 // autres options...
             ])
             ->add('genreNames', ChoiceType::class, [
                 'label' => 'Writing genres',
                 'choices' => [
-                    'Mystery' => 'Mystery',
-                    'Science Fiction' => 'Science Fiction',
-                    'Fantasy' => 'Fantasy',
-                    'Horror' => 'Horror',
+                    'Mystère' => 'Mystery',
+                    'Science-Fiction' => 'Science Fiction',
+                    'Fantaisie' => 'Fantasy',
+                    'Horreur' => 'Horror',
                     'Romance' => 'Romance',
-                    'Adventure' => 'Adventure',
+                    'Aventure' => 'Adventure',
                     'Action' => 'Action',
                 ],
                 'expanded' => true, // pour rendre ce champ comme un groupe de checkboxes
@@ -43,17 +43,31 @@ class AppScenarioType extends AbstractType
                 // ],
             ])
             ->add('authorName', TextType::class, [
-                'label' => 'In the style of this author',
+                'label' => "Indiquez un auteur pour le style d'écriture",
                 'required' => false
             ])
-            ->add('wordsCount', IntegerType::class, [
-                'label' => 'Words Count',
-                'attr' => ['min' => 30, 'max' => 150], // Assure que c'est un entier de 3 chiffres
-                // autres options...
+            ->add('wordsCount', ChoiceType::class, [ // Utilise ChoiceType au lieu de IntegerType
+                'label' => 'Response length (in words)',
+                'choices' => [
+                    'short' => 40, // Le label "40 words" mappé à la valeur 40
+                    'medium' => 50, // Le label "50 words" mappé à la valeur 50
+                    'long' => 60, // Le label "60 words" mappé à la valeur 60
+                ],
+                'expanded' => true, // false pour une liste déroulante, true pour des boutons radio
+                'multiple' => false, // false car un seul choix est possible
+                'data' => 50, // Valeur par défaut'
             ])
-            ->add('languageName', TextType::class, [
-                'label' => 'Language Name',
-                // autres options...
+
+            ->add('languageName', ChoiceType::class, [
+                'label' => 'Indiquez la langue',
+                'choices' => [
+                    'Français' => 'french',
+                    'Anglais' => 'english',
+                    'Espagnol' => 'spanish',
+                ],
+                'expanded' => true,
+                'multiple' => false,
+                'data' => 'french', // Valeur par défaut
             ])
             ->add(
                 'submit',

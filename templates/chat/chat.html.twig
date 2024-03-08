@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ChatController!{% endblock %}
+{% block title %}Aventure de {{chat.characterName}}✨{% endblock %}
 
 {% block body %}
 <div id="limitModal" class="fixed inset-0 bg-transparent backdrop-blur-sm items-center justify-center hidden z-50 w-full h-full top-0">
@@ -104,8 +104,8 @@ function addResponseToChat(responseText, responseType) {
 
     // Créez et configurez le h3 pour le nom du personnage
     const characterName = document.createElement("h3");
-    characterName.className = "text-lg font-medium text-gray-900";
-    characterName.textContent = responseType === 'user' ? "Utilisateur" : "GPT"; // Changez cela selon votre besoin
+    characterName.className = "text-lg font-medium text-white";
+    characterName.textContent = responseType === 'user' ? "Utilisateur" : "Maitre du jeu"; // Changez cela selon votre besoin
     // Ajoutez le h3 à la div de texte
     textContainerDiv.appendChild(characterName);
 

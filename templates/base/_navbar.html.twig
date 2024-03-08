@@ -29,13 +29,13 @@
       <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
         {# logo #}
         <div class="flex flex-shrink-0 items-center">
-          <a href="{{ path('app_home') }}" class="text-sm font-medium text-yellow-400">
+          <a href="{{ path('app_home') }}" class="text-sm font-medium text-yellow-400 title-text-shadow">
             Rolepl.ai✨
           </a>
         </div>
        <div class="hidden sm:ml-6 sm:block">
+       
   <div class="flex space-x-4">
-    
     {% if app.user %}
     <a href="{{ path('app') }}" class="{{ currentPath == '/app' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} rounded-md px-3 py-2 text-sm font-medium" aria-current="page">
       New game
@@ -104,7 +104,7 @@
 
   <!-- Mobile menu, show/hide based on menu state. -->
   <div class="hidden absolute z-10 w-full border-solid border-white border-b-2" id="mobile-menu">
-    <div class="space-y-1 px-2 pb-3 pt-2 radient-background border-white">
+    <div class="space-y-1 px-2 pb-3 pt-2 bg-transparent backdrop-blur-xl border-white">
       <!-- Current: "bg-gray-900 text-black", Default: "text-white hover:bg-grey-800 " -->
       {% if app.user %}
       <a href="{{ path('app') }}" class="{{ currentPath == '/app' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} block rounded-md px-3 py-2 text-base font-medium" aria-current="page">New game</a>
