@@ -16,9 +16,33 @@
     </head>
     <body>
         {% include "base/_navbar.html.twig"%}
+        <div class="cursor-follower"></div>
+
         <section class="pt-16 min-h-screen radient-background">
         {% block body %}{% endblock %}
         </section>
     </body>
     {{ encore_entry_script_tags('app') }}
+    <script>
+        // ANIMATION CURSOR FOLLOWER  
+        document.addEventListener('mousemove', function(event) {
+        const cursorFollower = document.querySelector('.cursor-follower');
+        if (cursorFollower) {
+            // Calculate the position for the gradient to follow the cursor
+            const x = event.clientX;
+            const y = event.clientY;
+            // Update the gradient to create a small circle around the cursor
+            cursorFollower.style.background = `radial-gradient(600px at ${x}px ${y}px, #fbbe2415, transparent`;
+            cursorFollower.classList.remove('hidden');
+            }
+
+        });
+
+        document.addEventListener('mouseleave', function() {
+        const cursorFollower = document.querySelector('.cursor-follower');
+        if (cursorFollower) {
+            cursorFollower.classList.add('hidden');
+        }
+        });
+    </script>
 </html>
