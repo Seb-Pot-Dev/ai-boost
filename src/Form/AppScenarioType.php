@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class AppScenarioType extends AbstractType
 {
@@ -20,7 +21,11 @@ class AppScenarioType extends AbstractType
         $builder
             ->add('characterName', TextType::class, [
                 'label' => 'Nom de votre personnage',
-                // autres options...
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez entrer un nom pour votre personnage.',
+                    ]),
+                ],
             ])
             ->add('genreNames', ChoiceType::class, [
                 'label' => 'Writing genres',
@@ -34,13 +39,7 @@ class AppScenarioType extends AbstractType
                     'Action' => 'Action',
                 ],
                 'expanded' => true, // pour rendre ce champ comme un groupe de checkboxes
-                'multiple' => true, // permet de sélectionner plusieurs options
-                // 'constraints' => [
-                //     new Count([
-                //         'min' => 0, // Nombre minimum d'éléments à sélectionner
-                //         'minMessage' => 'You must select at least one genre.', // Message d'erreur si l'utilisateur ne sélectionne pas au moins un genre
-                //     ]),
-                // ],
+                'multiple' => true, // permet de sélectionner plusieurs options            
             ])
             ->add('authorName', TextType::class, [
                 'label' => "Indiquez un auteur pour le style d'écriture",
