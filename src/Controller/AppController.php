@@ -41,9 +41,9 @@ class AppController extends AbstractController
         $chatCount = $entityManager->getRepository(Chat::class)->count(['user' => $user]);
 
         // créer un formulaire à partir de la classe AppScenarioType
-        $form = $this->createForm(AppScenarioType::class);
+        $appForm = $this->createForm(AppScenarioType::class);
         // handleRequest permet de récupérer les données du formulaire
-        $form->handleRequest($request);
+        $appForm->handleRequest($request);
         // initialise scenario comme une string vide
         $scenario = '';
 
@@ -56,12 +56,12 @@ class AppController extends AbstractController
         }
 
         // Si le formulaire est soumis, valide
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($appForm->isSubmitted() && $appForm->isValid()) {
             // Si la requête est une requête AJAX
             if ($request->isXmlHttpRequest()) {
 
                 // Récupère les données du formulaire et les stocke dans $data
-                $data = $form->getData();
+                $data = $appForm->getData();
 
                 // Si le tableau genreNames n'est pas vide
                 if (!empty($data['genreNames'])) {
@@ -73,8 +73,8 @@ class AppController extends AbstractController
 
                 $initialPrompt = [
                     ['role' => 'user', 'content' => 'Lets play a game. My name is ' . $data['characterName'] . '. I am the sole protagonist of this story. '],
-                    ['role' => 'user', 'content' => 'You are the narrator of this story. This story is inspired by ' . $genreNamesString . ' genres. It should create suspense and twists.'],
-                    ['role' => 'user', 'content' => "The story is divided into paragraphs. Start by describing the starting point of the story, including the environment and the plot. This first paragraph should be between minimum 100 and maximum 140 words long. Then ask me what i want to do. Always wait for me to take decisions. Do not rush the story. Response with paragraphs not longer than " . $data['wordsCount'] . " words. You should use second-person to describe what happens to me. The story must not end. The pace will be very slow. Do not be general in your descriptions. Try to be detailed and inventive. I can only describe my actions and thoughts, you should describe everything else. I'm free to do whatever i want in this fictionnal roleplay game. The only limits are those of the story. Always follow my choices and describe the consequences of my actions. Use " . $data['languageName'] . " "],
+                    ['role' => 'user', 'content' => 'You are the narrator of this story. This story is inspired by ' . $genreNamesString . ' genres and written in ' . $data['languageName'] . '. It should create suspense and twists.'],
+                    ['role' => 'user', 'content' => "The story is divided into paragraphs. Start by describing the starting point of the story, including the environment and the plot. This first paragraph should be between minimum 100 and maximum 140 words long. Then ask me what i want to do. Always use " . $data['languageName'] . ". Wait for me to take decisions. Do not rush the story. Response with paragraphs not longer than " . $data['wordsCount'] . " words. You should use second-person to describe what happens to me. The story must not end. The pace will be very slow. Do not be general in your descriptions. Try to be detailed and inventive. I can only describe my actions and thoughts, you should describe everything else. I'm free to do whatever i want in this fictionnal roleplay game. The only limits are those of the story. Always follow my choices and describe the consequences of my actions.  "],
                 ];
 
                 // Si le tableau authorName n'est pas vide
@@ -146,13 +146,11 @@ class AppController extends AbstractController
                 ]);
             }
         }
-
+        
         // si pas une réponse ajax, render la page complete
         return $this->render('app/index.html.twig', [
             'controller_name' => 'AppController',
-            'form' => $form,
-            // 'message' => $message ?? null,
-
+            'form' => $appForm,
             'scenario' => $scenario,
 
         ]);
