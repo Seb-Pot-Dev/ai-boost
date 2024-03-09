@@ -4,7 +4,7 @@
 
 {% block body %}
 {# Fenetre limitModal #}
-<div id="limitModal" class="fixed inset-0 bg-transparent backdrop-blur-sm items-center justify-center hidden z-50 w-full h-full top-0">
+<div aria-label="fenetre modale de limitation" id="limitModal" class="fixed inset-0 bg-transparent backdrop-blur-sm items-center justify-center hidden z-50 w-full h-full top-0">
     <div class="modal-content bg-white p-5 rounded-lg max-w-sm mx-auto text-gray-900">
         <div class="modal-header flex justify-between items-center">
             <h2 class="text-2xl font-bold">Limite atteinte</h2>
@@ -18,115 +18,109 @@
         </div>
     </div>
 </div>
-<main class="radient-background">                
-    {# <div class="flex justify-center"> #}
-        <section id="formSection" class=" flex justify-center items-center px-8 sm:px-12 lg:col-span-7 lg:px-16 xl:col-span-6">
-            <div class="max-w-xl lg:max-w-3xl">    
-            <h1 class="flex items-center justify-center text-2xl text-yellow-400 font-medium">✨Configurez votre partie✨</h1>
-                {{ form_start(form, {
+
+<section aria-label="formulaire de scenario" id="formSection" class=" flex justify-center items-center px-8 sm:px-12 lg:px-16 ">
+    <div class="max-w-xl lg:max-w-3xl">    
+        <h1 class="flex items-center justify-center text-2xl text-yellow-400 font-medium">✨Configurez votre partie✨</h1>
+            {{ form_start(form, {
+                attr: {
+                    'id': 'my-form',
+                    'class': 'w-full h-full flex flex-col items-center justify-center',
+                    }
+                })
+            }}
+
+                <div class="col-span-6">
+                    {{ form_row(form.characterName, {
                     attr: {
-                        'id': 'my-form',
-                        'class': 'w-full h-full flex flex-col items-center justify-center',
-                        }
-                    })
-                }}
+                        'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-dark-blue shadow-sm'
+                        },
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet flex items-center justify-center'}, 
+                    }) }}
+                </div>
 
-                    <div class="col-span-6">
-                        {{ form_row(form.characterName, {
-                        attr: {
-                            'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-dark-blue shadow-sm'
-                            },
-                        label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet flex items-center justify-center'}, 
-                        }) }}
+                {# <div class="col-span-6 sm:col-span-3">
+                    {{ form_row(form.genreNames, {
+                    attr: {'class': 'p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'},
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
+                    }) }}
+                </div> #}
+            
+                <fieldset class=" flex flex-wrap gap-1 max-w-64 items-center justify-center">
+                    <p class="text-g-violet mt-2 text-sm font-medium flex items-center justify-center">Choisissez un ou plusieurs genres</p>
+                    {# Itération sur chaque choix pour genreNames #}
+                    {% for genreName in form.genreNames %}
+                    <div>
+                    <label class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-g-dark-blue hover:border-gray-300 has-[:checked]:bg-g-violet has-[:checked]:text-white has-[:checked]:border-black transform active:scale-75 transition-transform">
+                    {{ form_widget(genreName, {
+                        'attr': {'class': 'sr-only'}
+                    }) }}
+                    {# Utilisation du label du genre comme texte du bouton #}
+                    <p class="text-sm font-medium">{{ genreName.vars.label }}</p>
+                    </label>
+                </div>
+                {% endfor %}
+                </fieldset>
+                {% if form.genreNames.vars.errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.genreNames.vars.errors %}
+                            {{ error.message }}
+                        {% endfor %}
                     </div>
+                {% endif %}
+                <div class="">
+                    {{ form_row(form.authorName, {
+                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-dark-blue shadow-sm'},
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
+                    }) }}
+                </div>
 
-                    {# <div class="col-span-6 sm:col-span-3">
-                        {{ form_row(form.genreNames, {
-                        attr: {'class': 'p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'},
-                        label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
-                        }) }}
-                    </div> #}
-                
-                    <fieldset class=" flex flex-wrap gap-1 max-w-64 items-center justify-center">
-                        <p class="text-g-violet mt-2 block text-sm font-medium flex items-center justify-center">Choisissez un ou plusieurs genres</p>
-                        {# Itération sur chaque choix pour genreNames #}
-                        {% for genreName in form.genreNames %}
+                {# <div class="col-span-6 sm:col-span-3">
+                    {{ form_row(form.wordsCount, {
+                    attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-violet shadow-sm'},
+                    label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
+                    }) }}
+                </div> #}
+
+                <fieldset class="flex flex-col flex-wrap gap-1 max-w-64 items-center justify-center">
+                    <p class="text-g-violet mt-2 block text-sm font-medium">Longueur des réponses</p>
+                    {# Itération sur chaque choix pour genreNames #}
+                    <div class="flex gap-1">
+                    {% for wordsCount in form.wordsCount %}
                         <div>
-                        <label class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-g-dark-blue hover:border-gray-300 has-[:checked]:bg-g-violet has-[:checked]:text-white has-[:checked]:border-black transform active:scale-75 transition-transform">
-                        {{ form_widget(genreName, {
-                            'attr': {'class': 'sr-only'}
-                        }) }}
-                        {# Utilisation du label du genre comme texte du bouton #}
-                        <p class="text-sm font-medium">{{ genreName.vars.label }}</p>
-                        </label>
-                    </div>
+                            <label class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-g-dark-blue hover:border-gray-300 has-[:checked]:bg-g-violet has-[:checked]:text-white has-[:checked]:border-black transform active:scale-75 transition-transform">
+                            {{ form_widget(wordsCount, {
+                                'attr': {'class': 'sr-only'}
+                            }) }}
+                            {# Utilisation du label du genre comme texte du bouton #}
+                            <p class="text-sm font-medium">{{ wordsCount.vars.label }}</p>
+                            </label>
+                        </div>
                     {% endfor %}
-                    </fieldset>
-                    {{ form_errors(form.genreNames) }}
-
-
-
-
-                    <div class="">
-                        {{ form_row(form.authorName, {
-                        attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-dark-blue shadow-sm'},
-                        label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
-                        }) }}
                     </div>
+                </fieldset>
+                {{ form_errors(form.wordsCount) }}
 
-                    {# <div class="col-span-6 sm:col-span-3">
-                        {{ form_row(form.wordsCount, {
-                        attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-violet shadow-sm'},
-                        label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
-                        }) }}
-                    </div> #}
-
-                    <fieldset class="flex flex-col flex-wrap gap-1 max-w-64 items-center justify-center">
-                        <p class="text-g-violet mt-2 block text-sm font-medium">Longueur des réponses</p>
-                        {# Itération sur chaque choix pour genreNames #}
-                        <div class="flex gap-1">
-                        {% for wordsCount in form.wordsCount %}
-                            <div>
-                                <label class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-g-dark-blue hover:border-gray-300 has-[:checked]:bg-g-violet has-[:checked]:text-white has-[:checked]:border-black transform active:scale-75 transition-transform">
-                                {{ form_widget(wordsCount, {
-                                    'attr': {'class': 'sr-only'}
-                                }) }}
-                                {# Utilisation du label du genre comme texte du bouton #}
-                                <p class="text-sm font-medium">{{ wordsCount.vars.label }}</p>
-                                </label>
-                            </div>
-                        {% endfor %}
+                <fieldset class="flex flex-col flex-wrap gap-1 max-w-64 items-center justify-center">
+                    <p class="text-g-violet mt-2 block text-sm font-medium">Langue</p>
+                    {# Itération sur chaque choix pour genreNames #}
+                    <div class="flex gap-1">
+                    {% for language in form.languageName %}
+                        <div>
+                            <label class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-g-dark-blue hover:border-gray-300 has-[:checked]:bg-g-violet has-[:checked]:text-white has-[:checked]:border-black transform active:scale-75 transition-transform">
+                            {{ form_widget(language, {
+                                'attr': {'class': 'sr-only'}
+                            }) }}
+                            {# Utilisation du label du genre comme texte du bouton #}
+                            <p class="text-sm font-medium">{{ language.vars.label }}</p>
+                            </label>
                         </div>
-                    </fieldset>
-                    {{ form_errors(form.wordsCount) }}
+                    {% endfor %}
+                    </div>
+                </fieldset>
+                {{ form_errors(form.languageName) }}
 
-                    {# <div class="col-span-6 sm:col-span-3">
-                        {{ form_row(form.languageName, {
-                        attr: {'class': 'p-2 mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-g-dark-blue shadow-sm'},
-                        label_attr: {'class': 'mt-2 block text-sm font-medium text-g-violet'},
-                        }) }}
-                    </div> #}
-
-                    <fieldset class="flex flex-col flex-wrap gap-1 max-w-64 items-center justify-center">
-                        <p class="text-g-violet mt-2 block text-sm font-medium">Langue</p>
-                        {# Itération sur chaque choix pour genreNames #}
-                        <div class="flex gap-1">
-                        {% for language in form.languageName %}
-                            <div>
-                                <label class="flex cursor-pointer items-center justify-center rounded-md border border-gray-100 bg-white px-3 py-2 text-g-dark-blue hover:border-gray-300 has-[:checked]:bg-g-violet has-[:checked]:text-white has-[:checked]:border-black transform active:scale-75 transition-transform">
-                                {{ form_widget(language, {
-                                    'attr': {'class': 'sr-only'}
-                                }) }}
-                                {# Utilisation du label du genre comme texte du bouton #}
-                                <p class="text-sm font-medium">{{ language.vars.label }}</p>
-                                </label>
-                            </div>
-                        {% endfor %}
-                        </div>
-                    </fieldset>
-                    {{ form_errors(form.languageName) }}
-
-                    <div class="mt-2 md:mt-4 flex justify-center">
+                <div class="mt-2 md:mt-4 flex justify-center">
     <div class="cursor-pointer relative inline-block px-4 py-2 font-medium group">
         <span class="absolute inset-0 w-full h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-g-violet group-hover:-translate-x-0 group-hover:-translate-y-0"></span>
         <span class="absolute inset-0 w-full h-full bg-g-dark-blue border-2 border-g-violet group-hover:bg-g-violet"></span>
@@ -136,97 +130,31 @@
             }
         }) }}
     </div>
-</div>
 
 
 
-                        
-                    {{ form_end(form)}}
-                </div>
-            </div>
-    </section>
-
-    <section id="chatSection"  class=" max-h-screen flex flex-col items-start justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6" style="display: none">
-        <div class="flex items-start gap-4" id="gptOutputsDiv">
-            <img
-                src="https://funny-photo.s3.amazonaws.com/preview/half_robot_face_mask/robot-face-photo-effect.jpg"
-                alt=""
-                class="size-20 rounded-lg object-cover"
-            />
-
-            <div>
-                <h3 class="text-lg/tight font-medium text-gray-900">Maitre du jeu</h3>
-                <p class="mt-0.5 text-g-violet" id="gptOutputs">
-                {# GPT outputs heres #}
-                </p>
+                    
+                {{ form_end(form)}}
             </div>
         </div>
-        <div id="responseSection"></div>
+</section>
 
-        {# user input FORM #}
-        <div class="flex justify-center order-1 w-full">
-            <div class="w-6/12 overflow-hidden rounded-lg border border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
-                <textarea id="userResponse" class="w-full resize-none border-none align-top focus:ring-0 sm:text-sm" rows="4" placeholder="Enter any additional order notes..."></textarea>
-                <div class="flex items-center justify-end gap-2 bg-white p-3">
-                    <button id="sendResponse" type="button" class="rounded bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700">Add</button>
-                </div>
-            </div>
-        </div>
-    </section>
+<section aria-label="aventure" id="chatSection"  class="flex flex-col justify-between px-8 sm:px-12" style="height: calc(100vh - 64px); display: none;">            
+
+    <div aria-label="chat" id="responseSection" class=" overflow-scroll hide-scrollbar"></div>
+
+    <div aria-label="formulaire" class="flex items-center px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700">
+        <label for="chat" class="sr-only">Your message</label>
+        <textarea id="userResponse" rows="1" class="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Your message..."></textarea>
+            <button id="sendResponse" type="submit" class="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600">
+            <svg class="w-5 h-5 rotate-90 rtl:-rotate-90" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                <path d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z"/>
+            </svg>
+            <span class="sr-only">Send message</span>
+        </button>
+    </div>
+</section>
     
-</main>
-
-{# Script pour la gestion de la création SCENARIO #}
-<script>
-let chatId; // Stocke l'ID du chat pour l'utiliser dans la requête de réponse
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById('my-form'); 
-        form.addEventListener('submit', function (event) {
-            event.preventDefault();
-            const formData = new FormData(form);
-
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                // si on reçoit bien la reponse
-                if (data.success) {
-                    chatId = data.chatId;
-                    // faire disparaître le formulaire
-                    const formSection = document.getElementById('formSection');
-                    // effet de transition immédiat
-                    formSection.classList.add('fade-out');
-                    // Après 1s
-                    setTimeout(() => {
-                        // Cacher après la transition
-                        formSection.style.display = 'none'; 
-                        formSection.classList.remove('flex');
-                        // insérer la réponse
-                        const chatSection = document.getElementById('chatSection');
-                        const gptOutputs = document.getElementById('gptOutputs');
-                        gptOutputs.innerHTML = data.gptResponse;
-                        chatSection.classList.add('fade-in');
-                        chatSection.style.display = 'block';
-                        chatSection.style.opacity = 0;
-                        setTimeout(() => chatSection.style.opacity = 1, 10); // Léger délai pour commencer la transition
-                    }, 1000)
-                    } else {
-                    // Handle failure
-                    console.error('Form submission failed', data);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    });
-</script>
-
 {# Script pour la gestion de REPONSE #}
 <script>
 // Sélectionne le bouton et le textarea
@@ -251,7 +179,7 @@ function addResponseToChat(responseText, responseType) {
     // Créer et configurez le h3 pour le nom du personnage
     const characterName = document.createElement("h3");
     characterName.className = "text-lg font-medium text-white";
-    characterName.textContent = responseType === 'user' ? "Utilisateur" : "GPT"; // Changez cela selon votre besoin
+    characterName.textContent = responseType === 'user' ? "Utilisateur" : "Maitre du jeu"; // Changez cela selon votre besoin
     // Ajouter le h3 à la div de texte
     textContainerDiv.appendChild(characterName);
 
@@ -260,25 +188,25 @@ function addResponseToChat(responseText, responseType) {
     responseContent.textContent = responseText;
     textContainerDiv.appendChild(responseContent);
 
-
     // Ajoutez le paragraphe à la div de texte
     responseDiv.appendChild(textContainerDiv);
 
-    // Sélectionnez l'élément après lequel vous souhaitez insérer le nouveau div
-    const referenceElement = document.getElementById('responseSection'); // Assurez-vous que cet ID existe
+    // Sélectionner l'élément après lequel insérer le nouveau div
+    const referenceElement = document.getElementById('responseSection'); 
 
-    // Insérez le nouveau div après l'élément de référence
+    // Insérer la nouvel div après l'élément de référence
     referenceElement.appendChild(responseDiv);
 
 }
 sendButton.addEventListener('click', function() {
-    const responseText = userResponse.value.trim(); // Assurez-vous que la réponse n'est pas juste des espaces blancs
+    const responseText = userResponse.value.trim(); // s'assurer que la réponse n'est pas juste des espaces blancs
     if (responseText === '') {
         // Ne rien faire si la réponse de l'utilisateur est vide
         return;
     }
     addResponseToChat(responseText, 'user'); // Affiche immédiatement la réponse de l'utilisateur dans le chat
     userResponse.value = ''; // Efface le texte de l'utilisateur
+    scrollToBottom(); // scroll vers le bas pour voir la nouvelle réponse
 
     let formData = new FormData();
     formData.append('response', responseText);
@@ -311,6 +239,82 @@ sendButton.addEventListener('click', function() {
     });
 });
 </script>
+{# Script pour la gestion de la création SCENARIO #}
+<script>
+let chatId; // Stocke l'ID du chat pour l'utiliser dans la requête de réponse
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('my-form'); 
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw response; // Si la réponse n'est pas ok, la rejeter pour la traiter dans le bloc catch
+                }
+                return response.json(); // Sinon, continuer normalement
+            })            
+            .then(data => {
+                // si on reçoit bien la reponse
+                if (data.success) {
+                    chatId = data.chatId;
+                    // faire disparaître le formulaire
+                    const formSection = document.getElementById('formSection');
+                    // effet de transition immédiat
+                    formSection.classList.add('fade-out');
+                    // Après 1s
+                    setTimeout(() => {
+                        // Cacher après la transition
+                        formSection.style.display = 'none'; 
+                        formSection.classList.remove('flex');
+
+                        // insérer la réponse
+                        addResponseToChat(data.gptResponse, 'gpt');
+
+                        // Faire apparaître la section de chat
+                        const chatSection = document.getElementById('chatSection');
+                        chatSection.classList.add('fade-in');
+                        chatSection.style.display = 'flex';
+                        chatSection.style.opacity = 0;
+                        setTimeout(() => chatSection.style.opacity = 1, 10); // Léger délai pour commencer la transition
+                    }, 1000)
+                    } else {
+                    // Handle failure
+                    console.error('Form submission failed', data);
+                }
+            })
+            .catch(error => {
+                if (error.json) { // Vérifier si l'erreur peut être transformée en JSON (c'est-à-dire si c'est une réponse Fetch)
+                    error.json().then(errData => {
+                        // Supposons que le backend envoie les erreurs sous la forme { errors: { fieldName: "Error message" } }
+                        if (errData.errors) {
+                            Object.keys(errData.errors).forEach((key) => {
+                                const errorMsg = errData.errors[key];
+                                const errorElement = document.getElementById('error-' + key);
+                                if (errorElement) {
+                                    errorElement.textContent = errorMsg; // Mettre à jour le contenu textuel de l'élément d'erreur
+                                    errorElement.style.display = 'block'; // Assurez-vous que l'élément d'erreur est visible
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    // Gérer d'autres types d'erreurs (réseau, etc.)
+                    console.error('Error:', error);
+                }
+            });
+        });
+    });
+</script>
+
+
 <script>
 function scrollToBottom() {
     const chatContainer = document.getElementById('responseSection');
