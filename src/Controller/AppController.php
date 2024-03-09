@@ -17,14 +17,14 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class AppController extends AbstractController
 {
-   private $openAiApiKey;
-   public function __construct(ParameterBagInterface $params)
-   {
-       // Accéder à la clé d'API configurée
-       $this->openAiApiKey = $params->get('OPENAI_API_KEY');
-   }
+    private $openAiApiKey;
+    public function __construct(ParameterBagInterface $params)
+    {
+        // Accéder à la clé d'API configurée
+        $this->openAiApiKey = $params->get('OPENAI_API_KEY');
+    }
     #[Route('/app', name: 'app')]
-    public function index(Request $request, User $user = null, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, User $user = null, EntityManagerInterface $entityManager)
     {
         // Récupère l'utilisateur actuellement connecté
         $user = $this->getUser();
@@ -67,12 +67,14 @@ class AppController extends AbstractController
                 if (!empty($data['genreNames'])) {
                     // Créer une string avec les genres séparés par une virgule
                     $genreNamesString = implode(', ', $data['genreNames']);
-                };
+                } else {
+                    $genreNamesString = 'Realistic, Fictional';
+                }
 
                 $initialPrompt = [
-                    ['role' => 'user', 'content' => 'Lets play a game. I am the sole protagonist of this story. My name is ' . $data['characterName'] . '.'],
-                    ['role' => 'user', 'content' => 'You are the narrator of this story. This story is written by mixing different genres (' . $genreNamesString . ') cleverly blended together, creating suspense and twists typical to that genres.'],
-                    ['role' => 'user', 'content' => "The story is divided into paragraphs. Each paragraph is a " . $data['wordsCount'] . " words second-person description of the story in " . $data['languageName'] . " langage. Wait for the user to describe what happens next. Continue the story based on the user's response. Write another paragraph of the story. In this game where you are the narrator, always use the following Rules: Only continue the story after the user has said what will happen next. Do not rush the story, the pace will be very slow. Do not be general in your descriptions. Try to be detailed. Do not continue the story without the protagonist's input. Continue the new paragraph with a " . $data['wordsCount'] . " description of the story. The story must not end. Start the story with the first paragraph by describing the context. Describe the story in " . $data['languageName'] . ", using the second person."],
+                    ['role' => 'user', 'content' => 'Lets play a game. My name is ' . $data['characterName'] . '. I am the sole protagonist of this story. '],
+                    ['role' => 'user', 'content' => 'You are the narrator of this story. This story is inspired by ' . $genreNamesString . ' genres. It should create suspense and twists.'],
+                    ['role' => 'user', 'content' => "The story is divided into paragraphs. Start by describing the starting point of the story, including the environment and the plot. This first paragraph should be between minimum 100 and maximum 140 words long. Then ask me what i want to do. Always wait for me to take decisions. Do not rush the story. Response with paragraphs not longer than " . $data['wordsCount'] . " words. You should use second-person to describe what happens to me. The story must not end. The pace will be very slow. Do not be general in your descriptions. Try to be detailed and inventive. I can only describe my actions and thoughts, you should describe everything else. I'm free to do whatever i want in this fictionnal roleplay game. The only limits are those of the story. Always follow my choices and describe the consequences of my actions. Use " . $data['languageName'] . " "],
                 ];
 
                 // Si le tableau authorName n'est pas vide
@@ -145,7 +147,7 @@ class AppController extends AbstractController
             }
         }
 
-        // if not an AJAX request, render the full page + var
+        // si pas une réponse ajax, render la page complete
         return $this->render('app/index.html.twig', [
             'controller_name' => 'AppController',
             'form' => $form,
