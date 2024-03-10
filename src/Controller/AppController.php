@@ -162,11 +162,12 @@ class AppController extends AbstractController
         $user = $this->getUser();
         $maxFreeRequests = 5;
         if (!$user) {
-            // Assure-toi que l'utilisateur est connecté
+            // S'assurer que l'utilisateur est connecté
             return new JsonResponse(['error' => 'User not authenticated'], Response::HTTP_UNAUTHORIZED);
         }
 
         $chat = $entityManager->getRepository(Chat::class)->find($chatId);
+
         if (!$chat || $chat->getUser() !== $user) {
             // Vérifie que le chat existe et appartient à l'utilisateur connecté
             return new JsonResponse(['error' => 'Chat not found or access denied'], Response::HTTP_FORBIDDEN);
@@ -181,8 +182,9 @@ class AppController extends AbstractController
             ]);
         }
 
-        // Récupère la réponse de l'utilisateur à partir des données FormData
-        $userInput = $request->request->get('response'); // Utilisation de $request->request pour les données de formulaire
+        // Récupère la réponse de l'utilisateur à partir des données FormData et échape les caractères html
+        $userInput = htmlspecialchars($request->request->get('response'), ENT_QUOTES, 'UTF-8');
+
 
         if (empty($userInput)) {
             // Assure-toi que l'input de l'utilisateur est fourni
