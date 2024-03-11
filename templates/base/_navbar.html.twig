@@ -38,7 +38,7 @@
   <div class="flex space-x-4 items-center justify-between">
 
     {% if app.user %}
-    <div>
+    <div class="gap-4 flex">
     <a href="{{ path('app') }}" class="{{ currentPath == '/app' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} rounded-md px-3 py-2 text-sm font-medium" aria-current="page">
       Nouvelle partie
     </a>
