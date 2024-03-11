@@ -232,7 +232,8 @@ sendButton.addEventListener('click', function() {
 
     // Ajoute la réponse de l'API comme en attente
     const pendingResponseDiv = addResponseToChat('', 'gpt', true); // On passe 'true' pour 'isPending'
-    
+    scrollToBottom();
+
     fetch(url, { 
         method: 'POST',
         body: formData

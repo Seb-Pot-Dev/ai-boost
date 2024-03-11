@@ -84,97 +84,86 @@
 {# Script pour la gestion de REPONSE #}
 <script>
 // Sélectionne le bouton et le textarea
+const chatStory = '{{ chat.story | escape('js') }}'; // pour le résumé
 const sendButton = document.getElementById('sendResponse');
 const userResponse = document.getElementById('userResponse');
-const chatStory = '{{ chat.story | escape('js') }}'; // Assure-toi d'échapper le contenu pour JavaScript
 
-
-function addResponseToChat(responseText, responseType) {
+function addResponseToChat(responseText, responseType, isPending = false) {
     const responseDiv = document.createElement("div");
     const textContainerDiv = document.createElement("div");
-
-    // style différent selon le type de réponse (utilisateur ou GPT)
     responseDiv.className = responseType === 'user' ? "flex items-start gap-4 my-1" : "flex items-start gap-4 my-1";
-    // Créez la div externe pour l'avatar et le texte selon le type de réponse (utilisateur ou GPT)
     const imageElement = document.createElement("img");
-    imageElement.src = responseType === 'user' ? "https://cdn.futura-sciences.com/buildsv6/images/wide1920/1/d/8/1d8a8e8fe1_109430_chouette-hibou-difference.jpg" : "https://funny-photo.s3.amazonaws.com/preview/half_robot_face_mask/robot-face-photo-effect.jpg"; // Utilisez des liens d'image appropriés
+    imageElement.src = responseType === 'user' ? "https://cdn.futura-sciences.com/buildsv6/images/wide1920/1/d/8/1d8a8e8fe1_109430_chouette-hibou-difference.jpg" : "https://funny-photo.s3.amazonaws.com/preview/half_robot_face_mask/robot-face-photo-effect.jpg";
     imageElement.alt = responseType === 'user' ? "Avatar de l'utilisateur" : "Avatar de GPT";
     imageElement.className = "size-20 rounded-lg object-cover";
-    
-    // Ajoutez l'élément img à la div externe
     responseDiv.appendChild(imageElement);
-
-    // Créez et configurez le h3 pour le nom du personnage
     const characterName = document.createElement("h3");
     characterName.className = "text-lg font-medium text-white";
-    characterName.textContent = responseType === 'user' ? "Utilisateur" : "Maitre du jeu"; // Changez cela selon votre besoin
-    // Ajoutez le h3 à la div de texte
+    characterName.textContent = responseType === 'user' ? "Utilisateur" : "Maitre du jeu";
     textContainerDiv.appendChild(characterName);
 
-    const responseContent = document.createElement("p");
-    responseContent.className = "mt-0.5 text-g-violet";
-    responseContent.textContent = responseText;
-    textContainerDiv.appendChild(responseContent);
+    if (isPending) {
+        const loaderDiv = document.createElement("div");
+        loaderDiv.className = "loader loader-chat";
+        textContainerDiv.appendChild(loaderDiv);
+    } else {
+        const responseContent = document.createElement("p");
+        responseContent.className = "mt-0.5 text-g-violet";
+        responseContent.textContent = responseText;
+        textContainerDiv.appendChild(responseContent);
+    }
 
-
-    // Ajoutez le paragraphe à la div de texte
     responseDiv.appendChild(textContainerDiv);
-
-    // Sélectionnez l'élément après lequel vous souhaitez insérer le nouveau div
-    const referenceElement = document.getElementById('responseSection'); // Assurez-vous que cet ID existe
-
-    // Insérez le nouveau div après l'élément de référence
+    const referenceElement = document.getElementById('responseSection');
     referenceElement.appendChild(responseDiv);
 
+    return responseDiv; // Cette ligne est importante pour pouvoir mettre à jour la réponse plus tard
 }
+
 sendButton.addEventListener('click', function() {
-    const responseText = userResponse.value.trim(); // Assurez-vous que la réponse n'est pas juste des espaces blancs
-    if (responseText === '') {
-        // Ne rien faire si la réponse de l'utilisateur est vide
-        return;
-    }
-    addResponseToChat(responseText, 'user'); // Affiche immédiatement la réponse de l'utilisateur dans le chat
-    userResponse.value = ''; // Efface le texte de l'utilisateur
-    // scroll vers le bas
+    const responseText = userResponse.value.trim();
+    if (responseText === '') return;
+    addResponseToChat(responseText, 'user');
+    userResponse.value = '';
     scrollToBottom();
 
     let formData = new FormData();
     formData.append('response', responseText);
-    const chatId = '{{ chatId }}'; 
+    const chatId = '{{ chatId }}';
     const url = `/handle-chat-interaction/${chatId}`;
+    const pendingResponseDiv = addResponseToChat('', 'gpt', true); // On ajoute cette ligne pour afficher le loader
+    scrollToBottom();
 
-    fetch(url, { 
-        method: 'POST',
-        body: formData
-    })
+    fetch(url, { method: 'POST', body: formData })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+        if (!response.ok) throw new Error('Network response was not ok');
         return response.json();
     })
     .then(data => {
         if (data.success === false) {
-        // Affiche la fenêtre modale d'avertissement si l'utilisateur a atteint la limite
-        displayLimitModal(data.warning); // Affiche une fenêtre modale avec le message d'avertissement
-        }else if
-        (data && data.responseFromApi) {
-            addResponseToChat(data.responseFromApi, 'gpt'); // Ajoute la réponse de GPT
-            // scroll vers le bas
+            displayLimitModal(data.warning);
+        } else if (data && data.responseFromApi) {
+            const textContainerDiv = pendingResponseDiv.querySelector("div:nth-child(2)");
+            const loaderElement = textContainerDiv.querySelector(".loader-chat");
+            if (loaderElement) loaderElement.remove(); // Retire le loader
+
+            const responseContent = document.createElement("p");
+            responseContent.className = "mt-0.5 text-g-violet";
+            responseContent.textContent = data.responseFromApi;
+            textContainerDiv.appendChild(responseContent);
             scrollToBottom();
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        // Ici, affiche l'erreur à l'utilisateur au lieu de simplement l'enregistrer dans la console
     });
 });
 
-/* pour afficher l'historique des messages */
 const messages = {{ messages|json_encode|raw }};
 messages.forEach(message => {
     addResponseToChat(message.content, message.role);
 });
+
 </script>
 
 {# Pour récupérer le résumé #}
