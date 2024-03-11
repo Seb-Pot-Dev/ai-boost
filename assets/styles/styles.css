@@ -30,6 +30,7 @@
     --g-light-blue-hovered: #0000FF;
     --g-dark-red:  #170005;
 
+    --star-yellow: #FBBF24;
 }
 a:hover, button:hover{
   cursor: pointer;
@@ -171,4 +172,47 @@ contenu{
   pointer-events: none; /* Prevents it from interfering with mouse events */
   z-index: 9999; /* A high value to ensure it's on top of other elements */
   transition: background 0.2s; /* Optional: Smooth transition for the gradient movement */
+}
+
+/* Loader */
+/* HTML: <div class="loader"></div> */
+.loader {
+  /* width: 40px; */
+  /* aspect-ratio: 1; */
+  position: relative;
+}
+.loader-chat {
+  width: 30px; 
+  aspect-ratio: 1; 
+  position: relative;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: -8px 0 0 -8px;
+  width: 16px;
+  aspect-ratio: 1;
+  background: #FBBF24;
+  z-index: 1;
+  animation:
+    l2-1 2s  infinite,
+    l2-2 1s infinite ;
+}
+.loader:after {
+  background:#FBBF24;
+  animation-delay: -1s,0s;
+}
+@keyframes l2-1 {
+  0%   {top:0   ;left:0}
+  25%  {top:100%;left:0}
+  50%  {top:100%;left:100%}
+  75%  {top:0   ;left:100%}
+  100% {top:0   ;left:0}
+}
+@keyframes l2-2 {
+   40%,50% {transform: rotate(0.25turn) scale(0.5)}
+   100%    {transform: rotate(0.5turn) scale(1)}
 }

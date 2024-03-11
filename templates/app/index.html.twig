@@ -120,22 +120,28 @@
                 </fieldset>
                 {{ form_errors(form.languageName) }}
 
-                <div class="mt-2 md:mt-4 flex justify-center">
-    <div class="cursor-pointer relative inline-block px-4 py-2 font-medium group">
-        <span class="absolute inset-0 w-full h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-g-violet group-hover:-translate-x-0 group-hover:-translate-y-0"></span>
-        <span class="absolute inset-0 w-full h-full bg-g-dark-blue border-2 border-g-violet group-hover:bg-g-violet"></span>
-        {{ form_row(form.submit, {
-            'attr': {
-                'class': 'relative text-g-violet group-hover:text-white cursor-pointer border-none bg-transparent',
-            }
-        }) }}
-    </div>
+                <div class="mt-2 md:mt-4 flex justify-center ">
+                    <div id="submitScenarioBtn" class="cursor-pointer relative inline-block px-4 py-2 font-medium group">
+                    <span class="absolute inset-0 w-full h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-g-violet group-hover:-translate-x-0 group-hover:-translate-y-0"></span>
+                    <span class="absolute inset-0 w-full h-full bg-g-dark-blue border-2 border-g-violet group-hover:bg-g-violet"></span>
+                    {{ form_row(form.submit, {
+                        'attr': {
+                            'class': 'relative text-g-violet group-hover:text-white cursor-pointer border-none bg-transparent',
+                        
+                        }
+                    }) }}
+                </div>
+                
 
 
 
                     
                 {{ form_end(form)}}
             </div>
+            {# <div class="flex items-center justify-center">
+            <div class="loader"></div>
+            </div> #}
+
         </div>
 </section>
 
@@ -161,7 +167,7 @@
 const sendButton = document.getElementById('sendResponse');
 const userResponse = document.getElementById('userResponse');
 
-function addResponseToChat(responseText, responseType) {
+function addResponseToChat(responseText, responseType, isPending = false) {
     const responseDiv = document.createElement("div");
     const textContainerDiv = document.createElement("div");
 
@@ -185,8 +191,18 @@ function addResponseToChat(responseText, responseType) {
 
     const responseContent = document.createElement("p");
     responseContent.className = "mt-0.5 text-g-violet";
-    responseContent.textContent = responseText;
-    textContainerDiv.appendChild(responseContent);
+if (isPending) {
+        // Crée et ajoute le loader à la div de texte
+        const loaderDiv = document.createElement("div");
+        loaderDiv.className = "loader loader-chat"; // Utilise la classe CSS pour le loader
+        textContainerDiv.appendChild(loaderDiv);
+    } else {
+        // Crée et configure le texte de réponse habituel
+        const responseContent = document.createElement("p");
+        responseContent.className = "mt-0.5 text-g-violet";
+        responseContent.textContent = responseText;
+        textContainerDiv.appendChild(responseContent);
+    }    textContainerDiv.appendChild(responseContent);
 
     // Ajoutez le paragraphe à la div de texte
     responseDiv.appendChild(textContainerDiv);
@@ -197,6 +213,8 @@ function addResponseToChat(responseText, responseType) {
     // Insérer la nouvel div après l'élément de référence
     referenceElement.appendChild(responseDiv);
 
+    // Cette ligne renvoie le div de réponse pour qu'on puisse le mettre à jour plus tard
+    return responseDiv;
 }
 sendButton.addEventListener('click', function() {
     const responseText = userResponse.value.trim(); // s'assurer que la réponse n'est pas juste des espaces blancs
@@ -212,6 +230,9 @@ sendButton.addEventListener('click', function() {
     formData.append('response', responseText);
     const url = `/handle-chat-interaction/${chatId}`;
 
+    // Ajoute la réponse de l'API comme en attente
+    const pendingResponseDiv = addResponseToChat('', 'gpt', true); // On passe 'true' pour 'isPending'
+    
     fetch(url, { 
         method: 'POST',
         body: formData
@@ -228,9 +249,18 @@ sendButton.addEventListener('click', function() {
         displayLimitModal(data.warning); // Affiche une fenêtre modale avec le message d'avertissement
         }else if
         (data && data.responseFromApi) {
-            addResponseToChat(data.responseFromApi, 'gpt'); // Ajoute la réponse de GPT
-            // scroll vers le bas
-            scrollToBottom();
+// Retire le loader et affiche la réponse de l'API
+const textContainerDiv = pendingResponseDiv.querySelector("div:nth-child(2)"); // Le conteneur de texte est le second enfant de responseDiv
+const loaderElement = textContainerDiv.querySelector(".loader-chat"); // Sélectionne l'élément loader spécifique
+if (loaderElement) {
+    loaderElement.remove(); // Supprime uniquement le loader du DOM
+}
+
+        const responseContent = document.createElement("p");
+        responseContent.className = "mt-0.5 text-g-violet";
+        responseContent.textContent = data.responseFromApi;
+        textContainerDiv.appendChild(responseContent);
+        scrollToBottom();
         }
     })
     .catch(error => {
@@ -242,10 +272,12 @@ sendButton.addEventListener('click', function() {
 {# Script pour la gestion de la création SCENARIO #}
 <script>
 let chatId; // Stocke l'ID du chat pour l'utiliser dans la requête de réponse
+const appScenarioSubmitBtn = document.getElementById('submitScenarioBtn');
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('my-form'); 
         form.addEventListener('submit', function (event) {
             event.preventDefault();
+            appScenarioSubmitBtn.classList.add('loader');
             const formData = new FormData(form);
 
             fetch(form.action, {
