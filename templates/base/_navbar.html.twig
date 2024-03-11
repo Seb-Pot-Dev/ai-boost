@@ -7,7 +7,7 @@
         <!-- Mobile menu button-->
         <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-black hover:bg-grey-800  focus:outline-none focus:ring-2 focus:ring-inset focus:grey-800" aria-controls="mobile-menu" aria-expanded="false">
           <span class="absolute -inset-0.5"></span>
-          <span class="sr-only">Open main menu</span>
+          <span class="sr-only">Ouvrir menu principal</span>
           <!--
             Icon when menu is closed.
 
@@ -33,30 +33,40 @@
             Rolepl.ai✨
           </a>
         </div>
-       <div class="hidden sm:ml-6 sm:block">
+       <div class="hidden sm:ml-6 sm:block w-full">
        
-  <div class="flex space-x-4">
+  <div class="flex space-x-4 items-center justify-between">
+
     {% if app.user %}
+    <div>
     <a href="{{ path('app') }}" class="{{ currentPath == '/app' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} rounded-md px-3 py-2 text-sm font-medium" aria-current="page">
-      New game
+      Nouvelle partie
     </a>
-      <a href="{{ path('list_user_chats') }}" class="{{ currentPath == '/my-chats' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }}  rounded-md px-3 py-2 text-sm font-medium">My chats</a>
-      <p class="flex justify-center text-white cursor-default rounded-md px-3 py-2 text-sm font-medium">
-      Bonjour {{app.user.email}}
-      {% if app.user.isPremium(true) %}👑{% endif %}
-      </p>
-      <a href="{{ path('app_logout') }}" class="
-       text-white hover:bg-gray-900
-        rounded-md px-3 py-2 text-sm font-medium">
-        Logout
-      </a>
+    <a href="{{ path('list_user_chats') }}" class="{{ currentPath == '/my-chats' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }}  rounded-md px-3 py-2 text-sm font-medium">Mes aventures</a>
+    </div>
+    <div class="flex">
+    <p class="flex items-center justify-center text-white cursor-default rounded-md px-3 py-2 text-sm font-medium">
+    Bonjour {{app.user.email}}
+    {% if app.user.isPremium(true) %}👑{% endif %}
+    </p>
+    {% if not app.user.isPremium %}
+    <a href="{{ path('app_stripe') }}" class="text-white hover:bg-gray-900 ' }}  rounded-md px-3 py-2 text-sm font-medium">Premium</a>
+    {% endif %}
+    <a href="{{ path('app_logout') }}" class="
+      text-white hover:bg-gray-900
+      rounded-md px-3 py-2 text-sm font-medium">
+      Se déconnecter
+    </a>
+    </div>
     {% else %}
+    <div>
       <a href="{{ path('app_login') }}" class="{{ currentPath == '/login' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} rounded-md px-3 py-2 text-sm font-medium">
-        Login
+        Se connecter
       </a>
       <a href="{{ path('app_register') }}" class="{{ currentPath == '/register' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} rounded-md px-3 py-2 text-sm font-medium">
-        Register
+        S'inscrire
       </a>
+    </div>
     {% endif %}
   </div>
 </div>
@@ -107,12 +117,12 @@
     <div class="space-y-1 px-2 pb-3 pt-2 bg-transparent backdrop-blur-xl border-white">
       <!-- Current: "bg-gray-900 text-black", Default: "text-white hover:bg-grey-800 " -->
       {% if app.user %}
-      <a href="{{ path('app') }}" class="{{ currentPath == '/app' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} block rounded-md px-3 py-2 text-base font-medium" aria-current="page">New game</a>
-      <a href="{{ path('list_user_chats') }}" class="{{ currentPath == '/my-chats' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} block rounded-md px-3 py-2 text-base font-medium" aria-current="page">My chats</a>
+      <a href="{{ path('app') }}" class="{{ currentPath == '/app' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Nouvelle partie</a>
+      <a href="{{ path('list_user_chats') }}" class="{{ currentPath == '/my-chats' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Mes aventures</a>
       <a href="{{ path('app_logout') }}" class="text-white hover:bg-grey-800 block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Logout</a>
       {% else %}
-      <a href="{{ path('app_login') }}" class="{{ currentPath == '/login' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Login</a>
-      <a href="{{ path('app_register') }}" class="{{ currentPath == '/register' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} block rounded-md px-3 py-2 text-base font-medium">Register</a>      
+      <a href="{{ path('app_login') }}" class="{{ currentPath == '/login' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Se connecter</a>
+      <a href="{{ path('app_register') }}" class="{{ currentPath == '/register' ? 'bg-gray-800 text-g-violet' : 'text-white hover:bg-gray-900 ' }} block rounded-md px-3 py-2 text-base font-medium">S'inscrire</a>      
       {% endif %}
     </div>
   </div>
