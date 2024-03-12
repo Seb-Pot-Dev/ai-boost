@@ -15,7 +15,7 @@
                     Créer un compte
                 </a> 
             </div>
-            <div class="lg:col-span-5 flex items-center justify-center">
+            <div class="lg:col-span-5 flex items-center justify-center mt-8 lg:mt-0">
                 <div class="candle">
                     <div class="candle-flame"></div>
                     <div class="candle-wick"></div>
@@ -24,17 +24,18 @@
                 </div>
             </div>               
         </div>
-    <footer>
-    <div class="absolute flex bottom-0 px-8">
-        <div class="flex text-gray-600 text-xs">
-            <p>Dev with ❤️ by&nbsp</p>
-            <a class="underline text-gray-600 text-xs group-hover:text-white" href="https://www.sebastienpothee.com">Sébastien Pothée.</a>
+    <footer class="w-full fixed bottom-0 px-8 py-4 ">
+    <div class="max-w-screen-xl mx-auto flex flex-wrap justify-between items-center text-xs text-gray-600">
+        <div class="flex items-center gap-2">
+            <p>Dev with ❤️ by&nbsp<a class="underline hover:text-white" href="https://www.sebastienpothee.com">Sébastien Pothée.</a></p>
+            
         </div>
         
-        <div class="flex text-gray-600 text-xs">
-        &nbsp
-        <a href="mailto:sebastien.pothee.dev@gmail.com" class="underline">Contact me</a><p class="">&nbspfor bug report or feature request, premium access or just to say hi!</p>
+        <div class="flex items-center gap-2 mt-2 sm:mt-0">
+            
+            <p><a href="mailto:sebastien.pothee.dev@gmail.com" class="underline hover:text-white">Contact me</a>&nbspfor bug report or feature request, premium access or just to say hi :)</p>
         </div>
     </div>
-    </footer>
+</footer>
+
 {% endblock %}
