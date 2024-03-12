@@ -9,15 +9,23 @@ use Stripe\StripeClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class StripeController extends AbstractController
 {
+    private StripeClient $stripeClient;
+    private UrlGeneratorInterface $urlGenerator;
+
+    public function __construct(UrlGeneratorInterface $urlGenerator)
+    {
+        $this->stripeClient = new StripeClient($_ENV['STRIPE_API_KEY']);
+        $this->urlGenerator = $urlGenerator;
+    }
+
     #[Route('/stripe', name: 'app_stripe')]
     public function index(): Response
     {
-        return $this->render('stripe/index.html.twig', [
-            'controller_name' => 'StripeController',
-        ]);
+        return $this->render('stripe/index.html.twig');
     }
 
     #[Route('/create-checkout-session', name: 'app_stripe_create-checkout-session')]
@@ -37,17 +45,17 @@ class StripeController extends AbstractController
             'customer_email' => $user->getEmail(),
             'line_items' => [[
                 'price_data' => [
-                    'currency' => 'usd',
+                    'currency' => 'eur',
                     'product_data' => [
                         'name' => 'roleplaiy',
                     ],
-                    'unit_amount' => 2000,
+                    'unit_amount' => 50, //MONTANT MINIMAL DE 50CT
                 ],
                 'quantity' => 1
             ]],
             'mode' => 'payment',
-            'success_url' => 'http://localhost:8000/success',
-            'cancel_url' => 'http://localhost:8000/cancel',
+            'success_url' => $this->urlGenerator->generate('app_stripe_success', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'cancel_url' => $this->urlGenerator->generate('app_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
 
         // renvoie vers stripe, et selon succès/erreur renvoie vers les URL ci-dessus
@@ -57,7 +65,7 @@ class StripeController extends AbstractController
     #[Route('/success', name: 'app_stripe_success')]
     public function success(EntityManagerInterface $entityManager): Response
     {
-        
+
         $user = $this->getUser();
         if (!$user) {
             // Handle the case where there is no authenticated user
