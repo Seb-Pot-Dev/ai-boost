@@ -167,6 +167,15 @@
 const sendButton = document.getElementById('sendResponse');
 const userResponse = document.getElementById('userResponse');
 
+// Ajout d'un écouteur pour l'événement 'keydown' sur userResponse
+userResponse.addEventListener('keydown', function(event) {
+    // Vérifie si la touche pressée est 'Enter'
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Empêche l'action par défaut de la touche Entrée
+        sendButton.click(); // Simule un clic sur le bouton d'envoi
+    }
+});
+
 function addResponseToChat(responseText, responseType, isPending = false) {
     const responseDiv = document.createElement("div");
     const textContainerDiv = document.createElement("div");
@@ -175,7 +184,7 @@ function addResponseToChat(responseText, responseType, isPending = false) {
     responseDiv.className = responseType === 'user' ? "flex items-start gap-4 my-1" : "flex items-start gap-4 my-1";
     // Créez la div externe pour l'avatar et le texte selon le type de réponse (utilisateur ou GPT)
     const imageElement = document.createElement("img");
-    imageElement.src = responseType === 'user' ? "https://cdn.futura-sciences.com/buildsv6/images/wide1920/1/d/8/1d8a8e8fe1_109430_chouette-hibou-difference.jpg" : "https://funny-photo.s3.amazonaws.com/preview/half_robot_face_mask/robot-face-photo-effect.jpg"; // Utilisez des liens d'image appropriés
+    imageElement.src = responseType === 'user' ? "img/Default_A_close_up_portrait_of_the_player_of_a_game_of_role_He_3.jpg" : "img/Default_Imagine_a_close_up_portrait_of_a_Game_Master_narrating_0.jpg"; 
     imageElement.alt = responseType === 'user' ? "Avatar de l'utilisateur" : "Avatar de GPT";
     imageElement.className = "size-20 rounded-lg object-cover";
     
@@ -185,7 +194,7 @@ function addResponseToChat(responseText, responseType, isPending = false) {
     // Créer et configurez le h3 pour le nom du personnage
     const characterName = document.createElement("h3");
     characterName.className = "text-lg font-medium text-white";
-    characterName.textContent = responseType === 'user' ? "Utilisateur" : "Maitre du jeu"; // Changez cela selon votre besoin
+    characterName.textContent = responseType === 'user' ? "Vous" : "Maitre du jeu"; // Changez cela selon votre besoin
     // Ajouter le h3 à la div de texte
     textContainerDiv.appendChild(characterName);
 
